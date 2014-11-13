@@ -1,0 +1,19 @@
+# Logging settings.
+logging:
+
+  # The default level of all loggers. Can be OFF, ERROR, WARN, INFO, DEBUG, TRACE, or ALL.
+  level: DEBUG
+
+  # Logger-specific levels.
+  loggers:
+
+    # Overrides the level of com.example.dw.Thing and sets it to DEBUG.
+    "com.koodohub": DEBUG
+
+  appenders:
+    - type: file
+      currentLogFilename: ./logs/koodohub.log
+      archive: true
+      archivedLogFilenamePattern: ./logs/koodohub-%d.log
+      archivedFileCount: 5
+      timeZone: UTC
