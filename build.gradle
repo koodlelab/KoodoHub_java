@@ -12,6 +12,9 @@ repositories {
 dependencies {
     compile 'io.dropwizard:dropwizard-core:0.7.1'
     compile 'io.dropwizard:dropwizard-assets:0.7.1'
+    compile 'io.dropwizard:dropwizard-db:0.7.1'
+    compile 'io.dropwizard:dropwizard-jdbi:0.7.1'
+
     compile 'org.postgresql:postgresql:9.3-1102-jdbc41'
     compile 'org.springframework.security:spring-security-config:3.2.0.RELEASE'
     compile 'org.springframework.security:spring-security-web:3.2.5.RELEASE'

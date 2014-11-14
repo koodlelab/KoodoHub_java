@@ -1,15 +1,24 @@
 <!DOCTYPE html>
-<html>
+<html id="ng-app" ng-app="koodohub">
 <head lang="en">
   <meta charset="UTF-8">
   <title>Koodo Hub</title>
-  <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-</head>
+  <link rel="stylesheet" href="css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="css/koodohub.css"/>
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"/>
+  <script src="js/angular.min.js"></script>
+  <script src="js/angular-ui-router.min.js"></script>
+  <script src="js/koodohub.js"></script>
+  </head>
 <body>
-TODO
-
-
-  <script type="text/javascript" src="js/angular.min.js"></script>
+  <div ng-include="'header.html'"></div>
+  <div class="container">
+    <div class="container">
+      <div ui-view></div>
+    </div>
+    <!--<div ng-include="'member_home.html'"></div>-->
+    <div ng-include="'footer.html'"></div>
+  </div>
 </body>
 </html>

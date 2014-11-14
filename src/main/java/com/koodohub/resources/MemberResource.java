@@ -1,14 +1,49 @@
 package com.koodohub.resources;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
+import com.koodohub.core.ErrorResponse;
+import com.koodohub.core.Member;
+import com.koodohub.jdbi.MemberDAO;
 
-@Path("/member")
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriBuilder;
+import java.net.URI;
+
+@Path("/members")
 @Produces(MediaType.APPLICATION_JSON)
 public class MemberResource {
 
-//    @GET
-//    public void
+    private final MemberDAO dao;
+
+    public MemberResource(MemberDAO dao) {
+        this.dao = dao;
+    }
+
+    @POST
+    public Response create(@FormParam("name") String name,
+                           @FormParam("email") String email,
+                           @FormParam("password") String password,
+                           @FormParam("password_confirmation") String password_confirmation) {
+        Member user = new Member(name, email, password);
+        try {
+            dao.create(user);
+        } catch (Exception e) {
+            return ErrorResponse.fromException(e).build();
+        }
+        URI location = UriBuilder.fromPath(user.getName().toLowerCase()).build();
+        return Response.created(location).build();
+    }
+
+    @GET
+    @Path("/{name}")
+    public Response show(@PathParam("name") String name) {
+        Member user = dao.findByEmail(name);
+        if (user == null) {
+            return new ErrorResponse(Response.Status.NOT_FOUND).build();
+        }
+        return Response.status(Response.Status.OK).entity(user).build();
+    }
+
 }
