@@ -3,16 +3,20 @@
   <div class="col-md-6 col-md-offset-3">
     <form ng-submit="signup()">
       <div class="form-group">
-        <input type="text" ng-model="member.name" ng-required="true" placeholder="type your name" class="form-control"/>
+        <label>Full name</label>
+        <input type="text" ng-model="member.fullName" ng-required="true" class="form-control"/>
       </div>
       <div class="form-group">
-        <input type="text" ng-model="member.email" ng-required="true" placeholder="type your email" class="form-control"/>
+        <label>Email address</label>
+        <input type="text" ng-model="member.email" ng-required="true" class="form-control"/>
       </div>
       <div class="form-group">
-        <input type="password" ng-model="member.password" ng-required="true" placeholder="create password" class="form-control"/>
+        <label>Create a password</label>
+        <input type="password" ng-model="member.password" ng-required="true" class="form-control"/>
       </div>
       <div class="form-group">
-        <input type="password" ng-model="member.password_confirmation" ng-required="true" placeholder="confirm password" class="form-control"/>
+        <label>Choose your username</label>
+        <input type="text" ng-model="member.userName" ng-required="true" class="form-control"/>
       </div>
       <div class="form-group">
         <input type="submit" value="Create my account" class="btn btn-primary"/>

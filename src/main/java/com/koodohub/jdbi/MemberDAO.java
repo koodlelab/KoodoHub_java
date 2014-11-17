@@ -8,14 +8,11 @@ import org.skife.jdbi.v2.sqlobject.SqlUpdate;
 
 public interface MemberDAO {
 
-    @SqlUpdate("insert into members (name, email, password_digest) " +
-            "values (:name, :email, :password_digest)")
+    @SqlUpdate("insert into members (fullName, email, password, userName) " +
+            "values (:fullName, :email, :password, :userName)")
     int create(@BindBean Member member);
 
-    @SqlQuery("select * from users where email = :email")
-    Member findByEmail(@Bind("email") String email);
-
-    @SqlQuery("select * from users where name = :name")
-    Member findByName(@Bind("name") String name);
+    @SqlQuery("select * from users where userName = :userName")
+    Member findByUsername(@Bind("userName") String username);
 
 }

@@ -1,5 +1,5 @@
 (function() {
-  var app = angular.module('koodohub', ['ui.router']);
+  var app = angular.module('koodohub', ['ui.router', 'ngResource', 'ui.bootstrap']);
 
   app.config(function($stateProvider, $urlRouterProvider) {
     $urlRouterProvider.otherwise('/');
@@ -8,7 +8,6 @@
       .state('home', {
         url: '/',
         templateUrl: 'member_home.html'
-//        controller: 'MemberController'
       })
       .state('sign_up', {
         url: '/sign_up',
@@ -17,39 +16,29 @@
       })
   });
 
-  app.controller('MemberController', function($scope){
+  app.controller('MainController', function($scope){
+    $scope.messages = [];
+
+    $scope.closeAlert = function (index) {
+      $scope.messages.splice(index, 1);
+    }
+
+  });
+
+  app.controller('MemberController', function($scope, $resource){
     $scope.signup = function() {
-      console.log("sign up for "+$scope.member.name);
-//      var new_member = $resource('/member/');
-//      new_member.
+      console.log("sign up for "+$scope.member.fullName);
+      var new_member = $resource('/services/members');
+      new_member.save($scope.member, function(data) {
+        $scope.messages.push(
+          {type: 'success', msgs: ['Welcome to Koodo Hub. '+$scope.member.userName]}
+        );
+
+      }, function(failureResponse) {
+        $scope.messages.push(
+          {type: 'danger', msgs: failureResponse.data.errors}
+        );
+      });
     }
   });
-//      .state('list', {
-//        url: '/list',
-//        templateUrl: 'templates/list.html',
-//        controller: 'ListCtrl'
-//      })
-//      .state('list.item', {
-//        url: '/:item',
-//        templateUrl: 'templates/list.item.html',
-//        controller: function($scope, $stateParams) {
-//          $scope.item = $stateParams.item;
-//        }
-//      })
-
-
-//  views: {
-//    'content@': {
-//      templateUrl: 'partials/home.html',
-//        controller: 'HomeController'
-//    }
-//  }
-//  app.controller('StoreController', ['$http', function($http){
-//    var store = this;
-//    store.products = [];
-//    $http.get('/store-products.json').success(function(data){
-//      store.products = data;
-//    });
-//  }]);
-
 })();
