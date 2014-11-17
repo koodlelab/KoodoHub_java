@@ -25,6 +25,16 @@ public class Member {
     @Size(max = 10)
     private String userName;
 
+    public Member() {
+    }
+
+    public Member(final String fullName, final String email, final String password, final String userName) {
+        this.fullName = fullName;
+        this.email = email;
+        this.password = passwordEncoder.encode(password);
+        this.userName = userName;
+    }
+
     public String getFullName() {
         return fullName;
     }
@@ -44,5 +54,4 @@ public class Member {
     public void encryptPassword() {
         this.password = passwordEncoder.encode(this.password);
     }
-
 }

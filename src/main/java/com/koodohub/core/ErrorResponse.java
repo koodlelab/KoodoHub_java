@@ -5,29 +5,18 @@ import java.sql.SQLException;
 
 public class ErrorResponse {
     private final int status;
-    private final String message;
-    public static final String UNIQUE_VIOLATION_SQL_STATE = "23505";
+    private final String[] errors;
 
-    public ErrorResponse(Response.Status status, String message) {
+    public ErrorResponse(Response.Status status, String... errors) {
         this.status = status.getStatusCode();
-        this.message = message;
+        this.errors = errors;
     }
-
-    public ErrorResponse(Response.Status status) {
-        this(status, status.toString());
-    }
-
-    public static ErrorResponse fromException(Exception e) {
-        Response.Status status = Response.Status.INTERNAL_SERVER_ERROR;
-        Throwable cause = e.getCause();
-        if (cause instanceof SQLException) {
-            String sqlState = ((SQLException) cause).getSQLState();
-            if (sqlState.equals(UNIQUE_VIOLATION_SQL_STATE)) {
-                status = Response.Status.CONFLICT;
-            }
-        }
-        return new ErrorResponse(status, status.toString());
-    }
+//
+//    public ErrorResponse(Response.Status status, String error) {
+//        this.status = status.getStatusCode();
+//        this.errors = new String[1];
+//        this.errors[0] = error;
+//    }
 
     public Response build() {
         return Response
@@ -40,7 +29,7 @@ public class ErrorResponse {
         return status;
     }
 
-    public String getMessage() {
-        return message;
+    public String[] getErrors() {
+        return errors;
     }
 }
