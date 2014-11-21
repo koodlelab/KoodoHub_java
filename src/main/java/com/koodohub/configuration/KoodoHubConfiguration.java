@@ -1,4 +1,4 @@
-package com.koodohub;
+package com.koodohub.configuration;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.dropwizard.Configuration;
@@ -13,7 +13,17 @@ public class KoodoHubConfiguration extends Configuration {
     @JsonProperty("database")
     private DataSourceFactory database = new DataSourceFactory();
 
+
     public DataSourceFactory getDataSourceFactory() {
         return database;
+    }
+
+    @Valid
+    @NotNull
+    @JsonProperty("spring")
+    private SpringConfiguration springConfiguration = new SpringConfiguration();
+
+    public SpringConfiguration getSpringConfiguration() {
+        return springConfiguration;
     }
 }

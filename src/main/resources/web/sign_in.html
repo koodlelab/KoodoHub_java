@@ -1,0 +1,18 @@
+<h1>Sign in</h1>
+
+<div class="row">
+  <div class="col-md-6 col-md-offset-3">
+    <form ng-submit="signin()">
+      <div class="form-group">
+        <input type="text" ng-model="session.loginName" placeholder="user name or email" ng-required="true" class="form-control"/>
+      </div>
+      <div class="form-group">
+        <input type="password" ng-model="session.password" placeholder="password" ng-required="true" class="form-control"/>
+      </div>
+      <div class="form-group">
+        <input type="submit" value="Login" class="btn btn-primary"/>
+      </div>
+    </form>
+    <p>New user? <a href="#/sign_up">Sign up now!</a></p>
+  </div>
+</div>

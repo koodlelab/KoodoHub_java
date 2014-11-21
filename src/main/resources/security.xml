@@ -2,14 +2,23 @@
              xmlns:beans="http://www.springframework.org/schema/beans"
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xsi:schemaLocation="
-      http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
-      http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.1.xsd">
+      http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+      http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.2.xsd">
 
-  <global-method-security secured-annotations="enabled" authentication-manager-ref="myAuthenticationManager" proxy-target-class="true"/>
+  <!--<bean id="passwordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder">-->
+  <!--</bean>-->
 
-  <http create-session="stateless" realm="koodohub" authentication-manager-ref="myAuthenticationManager">
+  <!--<authentication-manager id="authenticationManager">-->
+    <!--<authentication-provider user-service-ref="userDao">-->
+      <!--<password-encoder ref="passwordEncoder"></password-encoder>-->
+    <!--</authentication-provider>-->
+  <!--</authentication-manager>-->
+
+  <global-method-security secured-annotations="enabled"
+                          authentication-manager-ref="KoodoAuthenticationManager" proxy-target-class="true"/>
+
+  <http create-session="stateless" realm="koodohub" authentication-manager-ref="KoodoAuthenticationManager">
     <http-basic />
-    <intercept-url pattern="/myapp/services/**" access="ROLE_READ_ONLY" />
   </http>
 
 </beans:beans>

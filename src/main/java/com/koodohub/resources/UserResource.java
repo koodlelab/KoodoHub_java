@@ -1,8 +1,8 @@
 package com.koodohub.resources;
 
-import com.koodohub.core.ErrorResponse;
-import com.koodohub.core.Member;
-import com.koodohub.jdbi.MemberDAO;
+import com.koodohub.domain.ErrorResponse;
+import com.koodohub.domain.User;
+import com.koodohub.dao.UserDAO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,42 +17,42 @@ import java.util.List;
 
 @Path("/members")
 @Produces(MediaType.APPLICATION_JSON)
-public class MemberResource {
+public class UserResource {
 
-    private final MemberDAO dao;
-    private final Logger logger = LoggerFactory.getLogger(MemberResource.class);
+    private final UserDAO dao;
+    private final Logger logger = LoggerFactory.getLogger(UserResource.class);
 
-    public MemberResource(MemberDAO dao) {
+    public UserResource(UserDAO dao) {
         this.dao = dao;
     }
 
     @POST
-    public Response create(@Valid Member member) {
-        logger.info("creating member {} {}", member.getFullName(), member.getUserName());
+    public Response create(@Valid User user) {
+        logger.info("creating member {} {}", user.getFullName(), user.getUserName());
         List<String> errors = new ArrayList<String>();
-        if (dao.findByEmail(member.getEmail()) != null) {
+        if (dao.findByEmail(user.getEmail()) != null) {
             return new ErrorResponse(Response.Status.CONFLICT,
-                    member.getEmail()+" has been registered.").build();
+                    user.getEmail()+" has been registered.").build();
         }
-        if (dao.findByUsername(member.getUserName()) != null) {
+        if (dao.findByUsername(user.getUserName()) != null) {
             return new ErrorResponse(Response.Status.CONFLICT,
-                    member.getUserName()+" has been used.").build();
+                    user.getUserName()+" has been used.").build();
         }
-        member.encryptPassword();
-        dao.create(member);
-        URI location = UriBuilder.fromPath(member.getUserName().toLowerCase()).build();
+        user.prepareForSave();
+        dao.create(user.getFullName(), user.getEmail(), user.getPassword(), user.getUserName(),
+            user.getRole()  , user.getCreatedOn(), user.getUpdatedOn());
+        URI location = UriBuilder.fromPath(user.getUserName().toLowerCase()).build();
         return Response.created(location).build();
     }
 
     @GET
     @Path("/{username}")
     public Response show(@PathParam("username") String username) {
-        Member user = dao.findByUsername(username);
+        User user = dao.findByUsername(username);
         if (user == null) {
             return new ErrorResponse(Response.Status.NOT_FOUND,
                     user.getUserName()+" not found.").build();
         }
         return Response.status(Response.Status.OK).entity(user).build();
     }
-
 }
