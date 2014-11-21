@@ -1,6 +1,5 @@
 package com.koodohub;
 
-//import com.koodohub.security.SpringSecurityConfiguration;
 import org.springframework.context.annotation.*;
 
 /**

@@ -59,6 +59,3 @@ logging:
       archivedLogFilenamePattern: ./logs/koodohub-%d.log
       archivedFileCount: 5
       timeZone: UTC
-
-spring:
-  applicationContext: ['applicationContext.xml']

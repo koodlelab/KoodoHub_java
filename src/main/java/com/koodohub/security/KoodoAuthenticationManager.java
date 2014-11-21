@@ -1,25 +1,28 @@
 package com.koodohub.security;
 
+import com.google.common.base.Optional;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
+import com.koodohub.jdbc.UserDAO;
+import com.koodohub.domain.User;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 
-import java.util.EnumMap;
-
-import static org.springframework.security.core.context.SecurityContextHolder.*;
-
+@Service("KoodoAuthenticationManager")
 public class KoodoAuthenticationManager implements AuthenticationManager {
 
     private Multimap<String,GrantedAuthority> privs = ArrayListMultimap.create();
+    private UserDAO userDAO;
 
     @PostConstruct
     public void init() {
@@ -28,33 +31,23 @@ public class KoodoAuthenticationManager implements AuthenticationManager {
         privs.put(Authorities.ROLE_ADMIN, new SimpleGrantedAuthority(Authorities.ROLE_MEMBER));
     }
 
+    public void initUserDao(UserDAO userDAO) {
+        this.userDAO = userDAO;
+    }
+
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-//        return null;
         String user = String.valueOf(authentication.getName());
         String password = String.valueOf(authentication.getCredentials());
-//
-//
-//        if (!privs.containsKey(user) || !"test".equals(password)) {
-//            throw new BadCredentialsException("Access denied.");
-//        }
 
+        Optional<User> userDetails = userDAO.findByLogin(user);
+        if (!userDetails.isPresent() || userDetails.get().isCorrectPassword(password)) {
+            throw new BadCredentialsException("Access denied.");
+        }
         //return authentication token + set roles in context
-        Authentication auth = new UsernamePasswordAuthenticationToken(authentication.getPrincipal(),
+        Authentication auth = new UsernamePasswordAuthenticationToken(userDetails.get().getUserName(),
                 authentication.getCredentials(), privs.get(Authorities.ROLE_MEMBER));
         SecurityContextHolder.getContext().setAuthentication(auth);
         return auth;
-
-
-//        if (!privs.containsKey(user) || !"test".equals(password)) {
-//            throw new BadCredentialsException("Access denied.");
-//        }
-
-
-        //return authentication token + set roles in context
-//        Authentication auth = new UsernamePasswordAuthenticationToken(authentication.getPrincipal(),
-//                authentication.getCredentials(), Roles.valueOf());
-//        getContext().setAuthentication(auth);
-//        return auth;
     }
 }

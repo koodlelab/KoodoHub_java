@@ -74,7 +74,9 @@
 //          $http.defaults.headers.common['X-Auth-Token'] = user.token;
 //          $cookieStore.put('user', user);
 //          $location.path("/");
-        });
+        }), function(error) {
+          console.log("error"+error);
+        };
     };
   });
 })();

@@ -1,8 +1,12 @@
 package com.koodohub.resources;
 
+import com.google.common.base.Optional;
 import com.koodohub.domain.ErrorResponse;
 import com.koodohub.domain.User;
-import com.koodohub.dao.UserDAO;
+import com.koodohub.domain.UserEntry;
+import com.koodohub.jdbc.UserDAO;
+import com.koodohub.security.Authorities;
+import io.dropwizard.hibernate.UnitOfWork;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,32 +31,34 @@ public class UserResource {
     }
 
     @POST
-    public Response create(@Valid User user) {
-        logger.info("creating member {} {}", user.getFullName(), user.getUserName());
+    @UnitOfWork
+    public Response create(@Valid UserEntry userEntry) {
+        logger.info("creating member {} {}", userEntry.getFullName(), userEntry.getUserName());
         List<String> errors = new ArrayList<String>();
-        if (dao.findByEmail(user.getEmail()) != null) {
+        if (dao.findByEmail(userEntry.getEmail()) != null) {
             return new ErrorResponse(Response.Status.CONFLICT,
-                    user.getEmail()+" has been registered.").build();
+                    userEntry.getEmail()+" has been registered.").build();
         }
-        if (dao.findByUsername(user.getUserName()) != null) {
+        if (dao.findByUsername(userEntry.getUserName()) != null) {
             return new ErrorResponse(Response.Status.CONFLICT,
-                    user.getUserName()+" has been used.").build();
+                    userEntry.getUserName()+" has been used.").build();
         }
-        user.prepareForSave();
-        dao.create(user.getFullName(), user.getEmail(), user.getPassword(), user.getUserName(),
-            user.getRole()  , user.getCreatedOn(), user.getUpdatedOn());
-        URI location = UriBuilder.fromPath(user.getUserName().toLowerCase()).build();
+        User newUser = new User(userEntry.getFullName(), userEntry.getEmail(),
+                userEntry.getPassword(), userEntry.getUserName(), Authorities.ROLE_MEMBER);
+        dao.create(newUser);
+        URI location = UriBuilder.fromPath(newUser.getUserName().toLowerCase()).build();
         return Response.created(location).build();
     }
 
     @GET
     @Path("/{username}")
+    @UnitOfWork
     public Response show(@PathParam("username") String username) {
-        User user = dao.findByUsername(username);
-        if (user == null) {
+        final Optional<User> user = dao.findByUsername(username);
+        if (!user.isPresent()) {
             return new ErrorResponse(Response.Status.NOT_FOUND,
-                    user.getUserName()+" not found.").build();
+                    username+" not found.").build();
         }
-        return Response.status(Response.Status.OK).entity(user).build();
+        return Response.status(Response.Status.OK).entity(user.get()).build();
     }
 }

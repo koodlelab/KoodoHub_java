@@ -1,10 +1,10 @@
 package com.koodohub.security;
 
+import com.koodohub.domain.User;
+import org.springframework.security.crypto.codec.Hex;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.codec.Hex;
 
 
 public class TokenUtils {
@@ -12,13 +12,13 @@ public class TokenUtils {
     public static final String MAGIC_KEY = "obfuscate";
 
 
-    public static String createToken(UserDetails userDetails) {
+    public static String createToken(User userDetails) {
 
 		/* Expires in one hour */
         long expires = System.currentTimeMillis() + 1000L * 60 * 60;
 
         StringBuilder tokenBuilder = new StringBuilder();
-        tokenBuilder.append(userDetails.getUsername());
+        tokenBuilder.append(userDetails.getUserName());
         tokenBuilder.append(":");
         tokenBuilder.append(expires);
         tokenBuilder.append(":");
@@ -28,10 +28,10 @@ public class TokenUtils {
     }
 
 
-    public static String computeSignature(UserDetails userDetails, long expires) {
+    public static String computeSignature(User userDetails, long expires) {
 
         StringBuilder signatureBuilder = new StringBuilder();
-        signatureBuilder.append(userDetails.getUsername());
+        signatureBuilder.append(userDetails.getUserName());
         signatureBuilder.append(":");
         signatureBuilder.append(expires);
         signatureBuilder.append(":");
@@ -61,7 +61,7 @@ public class TokenUtils {
     }
 
 
-    public static boolean validateToken(String authToken, UserDetails userDetails) {
+    public static boolean validateToken(String authToken, User userDetails) {
 
         String[] parts = authToken.split(":");
         long expires = Long.parseLong(parts[1]);

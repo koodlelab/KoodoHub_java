@@ -12,8 +12,8 @@ repositories {
 dependencies {
     compile 'io.dropwizard:dropwizard-domain:0.7.1'
     compile 'io.dropwizard:dropwizard-web:0.7.1'
-    compile 'io.dropwizard:dropwizard-db:0.7.1'
-    compile 'io.dropwizard:dropwizard-dao:0.7.1'
+    compile 'io.dropwizard:dropwizard-jdbc:0.7.1'
+    compile 'io.dropwizard:dropwizard-hibernate:0.7.1'
     compile 'io.dropwizard:dropwizard-migrations:0.7.1'
     compile 'io.dropwizard:dropwizard-assets:0.7.1'
 
