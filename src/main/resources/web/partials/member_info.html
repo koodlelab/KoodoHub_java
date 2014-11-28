@@ -1,0 +1,10 @@
+<!--<%= link_to gravatar_for(current_user, size: 52), current_user %>-->
+<h1>{{user.fullname}}</h1>
+<span>
+  <a src="#">view my profile</a>
+</span>
+<span>
+  <ng-pluralize count="user.microposts.count"
+    when="{'0': 'No posts.', '1': '1 post.', 'other': '{} posts.'}">
+  </ng-pluralize>
+</span>

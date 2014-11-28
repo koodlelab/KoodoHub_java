@@ -86,10 +86,6 @@
     <orderEntry type="library" exported="" name="Gradle: dropwizard-db-0.7.1" level="project" />
     <orderEntry type="library" exported="" name="Gradle: tomcat-jdbc-7.0.50" level="project" />
     <orderEntry type="library" exported="" name="Gradle: tomcat-juli-7.0.50" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: dropwizard-jdbi-0.7.1" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: jdbi-2.55" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: metrics-jdbi-3.0.2" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: annotations-2.0.3" level="project" />
     <orderEntry type="library" exported="" name="Gradle: dropwizard-migrations-0.7.1" level="project" />
     <orderEntry type="library" exported="" name="Gradle: liquibase-core-3.1.1" level="project" />
     <orderEntry type="library" exported="" name="Gradle: liquibase-slf4j-1.2.1" level="project" />

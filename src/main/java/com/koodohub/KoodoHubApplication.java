@@ -10,7 +10,6 @@ import io.dropwizard.Application;
 import io.dropwizard.assets.AssetsBundle;
 import io.dropwizard.db.DataSourceFactory;
 import io.dropwizard.hibernate.HibernateBundle;
-import io.dropwizard.jdbi.bundles.DBIExceptionsBundle;
 import io.dropwizard.migrations.MigrationsBundle;
 import io.dropwizard.servlets.tasks.Task;
 import io.dropwizard.setup.Bootstrap;
@@ -49,7 +48,6 @@ public class KoodoHubApplication extends Application<KoodoHubConfiguration> {
     @Override
     public void initialize(Bootstrap<KoodoHubConfiguration> bootstrap) {
         bootstrap.addBundle(new AssetsBundle("/web", "/", "index.html", "root"));
-        bootstrap.addBundle(new DBIExceptionsBundle());
         bootstrap.addBundle(new MigrationsBundle<KoodoHubConfiguration>() {
             @Override
             public DataSourceFactory getDataSourceFactory(KoodoHubConfiguration configuration) {
@@ -63,7 +61,6 @@ public class KoodoHubApplication extends Application<KoodoHubConfiguration> {
     @Override
     public void run(KoodoHubConfiguration configuration, Environment environment) throws Exception {
 
-        environment.jersey().setUrlPattern("/services/*");
 
         final UserDAO userDAO = new UserDAO(hibernateBundle.getSessionFactory());
 
@@ -125,6 +122,7 @@ public class KoodoHubApplication extends Application<KoodoHubConfiguration> {
         KoodoAuthenticationManager authenticationManager = ctx.getBean(KoodoAuthenticationManager.class);
         authenticationManager.initUserDao(userDAO);
 
+        environment.jersey().setUrlPattern("/services/*");
         // register dropwizard resources
         environment.jersey().register(new UserResource(userDAO));
         environment.jersey().register(new SessionResource(userDAO, authenticationManager));

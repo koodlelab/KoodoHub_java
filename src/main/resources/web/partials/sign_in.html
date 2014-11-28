@@ -1,0 +1,32 @@
+<div modal="showSignInModal">
+  <div class="modal-header">
+    <button type="button" class="close"
+            ng-click="closeSignIn()" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h2>Sign In</h2>
+    <alert type="danger" ng-show="errors">
+      <div ng-repeat="error in errors">{{error}}</div>
+    </alert>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-md-6 col-md-offset-3">
+        <form ng-submit="signin()">
+          <div class="form-group">
+            <input type="text" ng-model="session.loginName" placeholder="user name or email" ng-required="true" class="form-control"/>
+          </div>
+          <div class="form-group">
+            <input type="password" ng-model="session.password" placeholder="password" ng-required="true" class="form-control"/>
+          </div>
+          <div class="form-group">
+            <input type="submit" value="Login" class="btn btn-primary"/>
+          </div>
+        </form>
+      </div>
+    </div>
+   </div>
+  <div class="modal-footer">
+    <p>New user? <a href="#" ng-click="switchToSignUp()">Sign up now!</a></p>
+  </div>
+</div>
+
+

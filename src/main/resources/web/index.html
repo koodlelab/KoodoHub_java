@@ -18,12 +18,9 @@
 <body>
   <div ng-include="'header.html'"></div>
   <div class="container">
-    <div ng-controller="MainController">
-      <alert ng-repeat="message in messages" type="{{message.type}}" close="closeAlert($index)">
-        <div ng-repeat="actualMessage in message.msgs">{{actualMessage}}</div></alert>
+    <div class="container">
       <div ui-view></div>
     </div>
-    <!--<div ng-include="'member_home.html'"></div>-->
     <div ng-include="'footer.html'"></div>
   </div>
 </body>

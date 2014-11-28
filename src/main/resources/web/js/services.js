@@ -1,7 +1,7 @@
 var services = angular.module('koodohub.services', ['ngResource']);
 
 services.factory('MemberService', function($resource) {
-  return $resource('services/members/:id');
+  return $resource('services/members/:username');
 });
 
 

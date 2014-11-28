@@ -1,5 +1,7 @@
 package com.koodohub.domain;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import com.koodohub.security.JsonViews;
 import org.hibernate.validator.constraints.Email;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -34,14 +36,31 @@ public class User {
 
     private static final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(11);
 
+    //    @NotNull
+    @FormParam("fullname")
+    @Size(min=4, max=20)
     @Column(name = "fullname", nullable = false)
+    @JsonView(JsonViews.User.class)
     private String fullname;
+
+//    @NotNull
+    @Email @FormParam("email")
     @Column(name = "email", nullable = false)
+    @JsonView(JsonViews.User.class)
     private String email;
+
+//    @NotNull
+    @FormParam("password")
+    @Size(min = 6, max = 100)
     @Column(name = "password", nullable = false)
     private String password;
+
     @Id
+//    @NotNull
+    @FormParam("username")
+    @Size(max = 10)
     @Column(name = "username", nullable = false)
+    @JsonView(JsonViews.User.class)
     private String username;
 
     @Column(name = "role", nullable = false)
@@ -52,6 +71,10 @@ public class User {
 
     @Column(name = "updatedon", nullable = false)
     private Date updatedOn;
+
+    public User() {
+
+    }
 
     public User(final String fullName, final String email, final String password,
                 final String userName, final String role) {
@@ -66,6 +89,22 @@ public class User {
 
     public boolean isCorrectPassword(final String password) {
         return passwordEncoder.matches(password, this.password);
+    }
+
+    public void setFullname(String fullname) {
+        this.fullname = fullname;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getFullName() {

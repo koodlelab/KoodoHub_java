@@ -3,7 +3,6 @@ package com.koodohub.resources;
 import com.google.common.base.Optional;
 import com.koodohub.domain.ErrorResponse;
 import com.koodohub.domain.User;
-import com.koodohub.domain.UserEntry;
 import com.koodohub.jdbc.UserDAO;
 import com.koodohub.security.Authorities;
 import io.dropwizard.hibernate.UnitOfWork;
@@ -21,6 +20,7 @@ import java.util.List;
 
 @Path("/members")
 @Produces(MediaType.APPLICATION_JSON)
+@Consumes(MediaType.APPLICATION_JSON)
 public class UserResource {
 
     private final UserDAO dao;
@@ -32,19 +32,19 @@ public class UserResource {
 
     @POST
     @UnitOfWork
-    public Response create(@Valid UserEntry userEntry) {
-        logger.info("creating member {} {}", userEntry.getFullName(), userEntry.getUserName());
+    public Response create(@Valid User user) {
+        logger.info("creating member {}", user.getUserName());
         List<String> errors = new ArrayList<String>();
-        if (dao.findByEmail(userEntry.getEmail()) != null) {
+        if (dao.findByEmail(user.getEmail()).isPresent()) {
             return new ErrorResponse(Response.Status.CONFLICT,
-                    userEntry.getEmail()+" has been registered.").build();
+                    user.getEmail()+" has been registered.").build();
         }
-        if (dao.findByUsername(userEntry.getUserName()) != null) {
+        if (dao.findByUsername(user.getUserName()).isPresent()) {
             return new ErrorResponse(Response.Status.CONFLICT,
-                    userEntry.getUserName()+" has been used.").build();
+                    user.getUserName()+" has been used.").build();
         }
-        User newUser = new User(userEntry.getFullName(), userEntry.getEmail(),
-                userEntry.getPassword(), userEntry.getUserName(), Authorities.ROLE_MEMBER);
+        User newUser = new User(user.getFullName(), user.getEmail(),
+                user.getPassword(), user.getUserName(), Authorities.ROLE_MEMBER);
         dao.create(newUser);
         URI location = UriBuilder.fromPath(newUser.getUserName().toLowerCase()).build();
         return Response.created(location).build();
@@ -52,13 +52,17 @@ public class UserResource {
 
     @GET
     @Path("/{username}")
+    @Produces(MediaType.APPLICATION_JSON)
     @UnitOfWork
-    public Response show(@PathParam("username") String username) {
+    public User show(@PathParam("username") String username) {
+        logger.debug("querying user information:{}", username);
         final Optional<User> user = dao.findByUsername(username);
         if (!user.isPresent()) {
-            return new ErrorResponse(Response.Status.NOT_FOUND,
-                    username+" not found.").build();
+            throw new WebApplicationException(404);
+//            return new ErrorResponse(Response.Status.NOT_FOUND,
+//                    username+" not found.").build();
         }
-        return Response.status(Response.Status.OK).entity(user.get()).build();
+        logger.debug("user email:"+user.get().getEmail());
+        return user.get();
     }
 }
