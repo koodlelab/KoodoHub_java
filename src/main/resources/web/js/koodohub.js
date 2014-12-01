@@ -1,5 +1,5 @@
 (function() {
-  var app = angular.module('koodohub', ['ui.router', 'ui.bootstrap', 'koodohub.services']);
+  var app = angular.module('koodohub', ['ui.router', 'ui.bootstrap', 'ngCookies', 'koodohub.services']);
 
   app.config(function($stateProvider, $urlRouterProvider, $httpProvider) {
     $urlRouterProvider.otherwise('/');
@@ -63,7 +63,7 @@
     $httpProvider.responseInterceptors.push(interceptor);
   });
 
-  app.run(function($rootScope, $http, $location, SessionService) {
+  app.run(function($rootScope, $http, $location, SessionService, $cookieStore) {
 
     /* Reset error when a new view is loaded */
     $rootScope.$on('$viewContentLoaded', function() {
@@ -71,36 +71,39 @@
       delete $rootScope.errors;
     });
 
-//    $rootScope.hasRole = function(role) {
-//
-//      if ($rootScope.user === undefined) {
-//        return false;
-//      }
-//
-//      if ($rootScope.user.roles[role] === undefined) {
-//        return false;
-//      }
-//
-//      return $rootScope.user.roles[role];
-//    };
-//
-//    $rootScope.logout = function() {
-//      delete $rootScope.user;
-//      delete $http.defaults.headers.common['X-Auth-Token'];
-//      $cookieStore.remove('user');
-//      $location.path("/login");
-//    };
-//
-//    /* Try getting valid user from cookie or go to login page */
-//    var originalPath = $location.path();
+    $rootScope.hasRole = function(role) {
+
+      if ($rootScope.user === undefined) {
+        return false;
+      }
+
+      if ($rootScope.user.roles[role] === undefined) {
+        return false;
+      }
+
+      return $rootScope.user.roles[role];
+    };
+
+    $rootScope.logout = function() {
+      delete $rootScope.user;
+      delete $rootScope.authToken;
+      $cookieStore.remove('authToken');
+      $location.path("/");
+    };
+
+    /* Try getting valid user from cookie or go to login page */
+    var originalPath = $location.path();
 //    $location.path("/login");
-//    var user = $cookieStore.get('user');
-//    if (user !== undefined) {
-//      $rootScope.user = user;
-//      $http.defaults.headers.common['X-Auth-Token'] = user.token;
-//
-//      $location.path(originalPath);
-//    }
+    var authToken = $cookieStore.get('authToken');
+    if (authToken !== undefined) {
+      $rootScope.authToken = authToken;
+      UserService.get(function(user) {
+        $rootScope.user = user;
+        $location.path(originalPath);
+      });
+    }
+
+    $rootScope.initialized = true;
 
   });
 
@@ -153,15 +156,22 @@
     $scope.user = MemberService.get({username: $stateParams.username});
   });
 
-  app.controller('SignInModalController', function($scope, SessionService, $modalInstance, $rootScope){
+  app.controller('SignInModalController', function($scope, SessionService, $modalInstance,
+                                                   $rootScope, $location, $cookieStore) {
 
     $scope.signin = function() {
       console.log("sign in for "+$scope.session.loginName);
+      var that = this;
       SessionService.authenticate($.param({loginName: $scope.session.loginName,
-        password: $scope.session.password}), function(user) {
-        //todo
+        password: $scope.session.password}), function(authenticationResult) {
         that.closeSignIn();
-        $location.path('/member/'+$scope.user.username);
+        var authToken = authenticationResult.token;
+        $rootScope.authToken = authToken;
+        if ($scope.rememberMe) {
+          $cookieStore.put('authToken', authToken);
+        }
+        $rootScope.user = $scope.session.loginName;
+        $location.path('/member/'+authenticationResult.name);
       });
     };
 

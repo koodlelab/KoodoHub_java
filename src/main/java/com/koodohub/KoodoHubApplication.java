@@ -5,6 +5,7 @@ import com.koodohub.domain.User;
 import com.koodohub.jdbc.UserDAO;
 import com.koodohub.resources.SessionResource;
 import com.koodohub.resources.UserResource;
+import com.koodohub.security.AuthenticationTokenProcessingFilter;
 import com.koodohub.security.KoodoAuthenticationManager;
 import io.dropwizard.Application;
 import io.dropwizard.assets.AssetsBundle;
@@ -121,6 +122,9 @@ public class KoodoHubApplication extends Application<KoodoHubConfiguration> {
         //inject user jdbi into authentication manager
         KoodoAuthenticationManager authenticationManager = ctx.getBean(KoodoAuthenticationManager.class);
         authenticationManager.initUserDao(userDAO);
+
+        AuthenticationTokenProcessingFilter tokenProcessingFilter = ctx.getBean(AuthenticationTokenProcessingFilter.class);
+        tokenProcessingFilter.initUserService(userDAO);
 
         environment.jersey().setUrlPattern("/services/*");
         // register dropwizard resources

@@ -5,6 +5,8 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import com.koodohub.jdbc.UserDAO;
 import com.koodohub.domain.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -21,6 +23,7 @@ import javax.annotation.PostConstruct;
 @Service("KoodoAuthenticationManager")
 public class KoodoAuthenticationManager implements AuthenticationManager {
 
+    private static final Logger logger = LoggerFactory.getLogger(KoodoAuthenticationManager.class);
     private Multimap<String,GrantedAuthority> privs = ArrayListMultimap.create();
     private UserDAO userDAO;
 
@@ -41,7 +44,9 @@ public class KoodoAuthenticationManager implements AuthenticationManager {
         String password = String.valueOf(authentication.getCredentials());
 
         Optional<User> userDetails = userDAO.findByLogin(user);
-        if (!userDetails.isPresent() || userDetails.get().isCorrectPassword(password)) {
+        if (!userDetails.isPresent() || !userDetails.get().isCorrectPassword(password)) {
+            logger.debug("login {} present? {}, password correct? {}", user, userDetails.isPresent(),
+                    userDetails.get().isCorrectPassword(password));
             throw new BadCredentialsException("Access denied.");
         }
         //return authentication token + set roles in context

@@ -1,6 +1,7 @@
 package com.koodohub.security;
 
 import com.koodohub.domain.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.codec.Hex;
 
 import java.security.MessageDigest;
