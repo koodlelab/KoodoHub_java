@@ -4,7 +4,7 @@ import com.google.common.base.Optional;
 import com.koodohub.domain.ErrorResponse;
 import com.koodohub.domain.User;
 import com.koodohub.jdbc.UserDAO;
-import com.koodohub.security.Authorities;
+import io.dropwizard.auth.Auth;
 import io.dropwizard.hibernate.UnitOfWork;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,7 +44,7 @@ public class UserResource {
                     user.getUserName()+" has been used.").build();
         }
         User newUser = new User(user.getFullName(), user.getEmail(),
-                user.getPassword(), user.getUserName(), Authorities.ROLE_MEMBER);
+                user.getPassword(), user.getUserName(), "MEMBER");
         dao.create(newUser);
         URI location = UriBuilder.fromPath(newUser.getUserName().toLowerCase()).build();
         return Response.created(location).build();
@@ -54,15 +54,12 @@ public class UserResource {
     @Path("/{username}")
     @Produces(MediaType.APPLICATION_JSON)
     @UnitOfWork
-    public User show(@PathParam("username") String username) {
+    public User show(@Auth User user, @PathParam("username") String username) {
         logger.debug("querying user information:{}", username);
-        final Optional<User> user = dao.findByUsername(username);
-        if (!user.isPresent()) {
+        final Optional<User> userInfo = dao.findByUsername(username);
+        if (!userInfo.isPresent()) {
             throw new WebApplicationException(404);
-//            return new ErrorResponse(Response.Status.NOT_FOUND,
-//                    username+" not found.").build();
         }
-        logger.debug("user email:"+user.get().getEmail());
-        return user.get();
+        return userInfo.get();
     }
 }

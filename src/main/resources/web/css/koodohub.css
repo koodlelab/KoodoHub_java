@@ -6,10 +6,6 @@ body {
   margin-top: 70px;
 }
 
-/*a {*/
-  /*color: #ffffff;*/
-/*}*/
-
 @media (max-width: 980px) {
   body {
     padding-top: 0;
@@ -26,6 +22,17 @@ body {
 /* typography */
 h1, h2, h3, h4, h5, h6 {
   line-height: 1;
+}
+
+.checkbox {
+  margin-top: -20px;
+  margin-bottom: 10px;
+}
+
+.checkbox span {
+  margin-left: 20px;
+  /*margin-bottom: -10px;*/
+  font-weight: normal;
 }
 
 h1 {

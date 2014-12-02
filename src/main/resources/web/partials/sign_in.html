@@ -18,12 +18,18 @@
             <input type="password" ng-model="session.password" placeholder="password" ng-required="true" class="form-control"/>
           </div>
           <div class="form-group">
+            <input type="checkbox" ng-model="session.rememberMe">
+            <!--<div class="checkbox inline">-->
+              <span>Remember me on this computer</span>
+            <!--</div>-->
+          </div>
+          <div class="form-group">
             <input type="submit" value="Login" class="btn btn-primary"/>
           </div>
         </form>
       </div>
     </div>
-   </div>
+  </div>
   <div class="modal-footer">
     <p>New user? <a href="#" ng-click="switchToSignUp()">Sign up now!</a></p>
   </div>

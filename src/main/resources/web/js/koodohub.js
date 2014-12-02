@@ -17,91 +17,92 @@
             templateUrl: 'partials/member.html',
             controller: 'MemberController'
           },
-          "member_info@member": {
-            templateUrl: 'partials/member_info.html'
-          },
+//          "member_info@member": {
+//            templateUrl: 'partials/member_info.html'
+//          },
           "member_stats@member": {
             templateUrl: 'partials/member_stats.html'
           },
           "member_micropost_form@member": {
-            templateUrl: 'partials/member_micropost_form.html'
+            templateUrl: 'partials/member_project_form.html'
           },
           "member_micropost_feed@member": {
-            templateUrl: 'partials/member_micropost_feed.html'
+            templateUrl: 'partials/member_project_feed.html'
           }
         }
-      });
-//      .state('')
-    /* Intercept http errors */
-    var interceptor = function ($rootScope, $q, $location) {
-
-      function success(response) {
-        return response;
+      })
+    /* Register error provider that shows message on failed requests or redirects to login page on
+     * unauthenticated requests */
+    $httpProvider.interceptors.push(function ($q, $rootScope, $location) {
+        return {
+          'responseError': function(rejection) {
+            var status = rejection.status;
+            var config = rejection.config;
+            var method = config.method;
+            var url = config.url;
+            $rootScope.errors = [];
+            if (status == 401) {
+              $rootScope.errors.push("Please login with valid username and password.");
+              $location.path( "/" );
+            } else {
+              $rootScope.errors.push(method + " on " + url + " failed with status " + status);
+              $rootScope.errors = $rootScope.errors.concat(rejection.data.errors);
+            }
+            return $q.reject(rejection);
+          }
+        };
       }
+    );
 
-      function error(response) {
-        $rootScope.errors = [];
-        var status = response.status;
-        var config = response.config;
-        var method = config.method;
-        var url = config.url;
-
-        if (status == 401) {
-          $rootScope.errors.push("Please login.");
-          $location.path("/sign_in");
-        } else {
-          $rootScope.errors.push(method + " on " + url + " failed with status " + status);
-          $rootScope.errors = $rootScope.errors.concat(response.data.errors);
+    /* Registers auth token interceptor, auth token is either passed by header or by query parameter
+     * as soon as there is an authenticated user */
+    $httpProvider.interceptors.push(function ($q, $window, $location) {
+      return {
+        'request': function(config) {
+          console.log("request with token:"+$window.sessionStorage.token);
+          var isRestCall = config.url.indexOf('services') == 0;
+          if (isRestCall && angular.isDefined($window.sessionStorage.token)) {
+            var authToken = $window.sessionStorage.token;
+            config.headers['X-Auth-Token'] = authToken;
+          }
+          return config || $q.when(config);
         }
-        return $q.reject(response);
-      }
-
-      return function (promise) {
-        return promise.then(success, error);
       };
-    }
-    $httpProvider.responseInterceptors.push(interceptor);
+    });
   });
 
-  app.run(function($rootScope, $http, $location, SessionService, $cookieStore) {
+  app.run(function($rootScope, $http, $location, $cookieStore, $window, MemberService, $state) {
+
+    $rootScope.authenticated = false;
 
     /* Reset error when a new view is loaded */
-    $rootScope.$on('$viewContentLoaded', function() {
-      console.log("view reloaded");
+    $rootScope.$on('$viewContentLoaded', function() { console.log("view reloaded");
       delete $rootScope.errors;
     });
 
-    $rootScope.hasRole = function(role) {
-
-      if ($rootScope.user === undefined) {
-        return false;
-      }
-
-      if ($rootScope.user.roles[role] === undefined) {
-        return false;
-      }
-
-      return $rootScope.user.roles[role];
-    };
-
     $rootScope.logout = function() {
       delete $rootScope.user;
-      delete $rootScope.authToken;
-      $cookieStore.remove('authToken');
-      $location.path("/");
+      delete $window.sessionStorage.token;
+      $.removeCookie('authToken');
+      $window.location.reload();
+
     };
 
     /* Try getting valid user from cookie or go to login page */
     var originalPath = $location.path();
-//    $location.path("/login");
-    var authToken = $cookieStore.get('authToken');
+    var authToken = $window.sessionStorage.token;
+    if (authToken === undefined) {
+      authToken = $.cookie('authToken');
+    }
     if (authToken !== undefined) {
-      $rootScope.authToken = authToken;
-      UserService.get(function(user) {
+      MemberService.get({username: authToken.split(':')[0]}, function(user) {
         $rootScope.user = user;
+        $rootScope.authenticated = true;
+        $window.sessionStorage.token = authToken;
         $location.path(originalPath);
       });
     }
+    console.log("authenticated..."+$rootScope.authenticated);
 
     $rootScope.initialized = true;
 
@@ -134,13 +135,13 @@
     }
   });
 
-  app.controller('SignUpModalController', function($scope, $modalInstance, $location, MemberService, $rootScope) {
+  app.controller('SignUpModalController', function($scope, $modalInstance, $window, MemberService, $rootScope) {
     $scope.user = new MemberService();
     $scope.signup = function() {
       var that = this;
       $scope.user.$save(function() {
         that.closeSignUp();
-        $location.path('/member/'+$scope.user.username);
+        $window.location.reload();
       });
     };
     $scope.switchToSignIn = function() {
@@ -157,21 +158,21 @@
   });
 
   app.controller('SignInModalController', function($scope, SessionService, $modalInstance,
-                                                   $rootScope, $location, $cookieStore) {
+                                                   $rootScope, $window) {
 
     $scope.signin = function() {
-      console.log("sign in for "+$scope.session.loginName);
       var that = this;
       SessionService.authenticate($.param({loginName: $scope.session.loginName,
         password: $scope.session.password}), function(authenticationResult) {
         that.closeSignIn();
         var authToken = authenticationResult.token;
-        $rootScope.authToken = authToken;
-        if ($scope.rememberMe) {
-          $cookieStore.put('authToken', authToken);
+        $window.sessionStorage.token = authToken;
+        if ($scope.session.rememberMe) {
+          $.cookie('authToken', authToken, { expires: 365 });
         }
         $rootScope.user = $scope.session.loginName;
-        $location.path('/member/'+authenticationResult.name);
+        console.log("signed in");
+        $window.location.reload();
       });
     };
 

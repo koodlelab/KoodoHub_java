@@ -1,19 +1,26 @@
 <div class="row">
   <aside class="col-md-4">
     <section>
-      <!--{{user.email}}-->
-      <div ui-view="member_info"></div>
+      <h1>{{user.fullname}}</h1>
+      <span>
+        <a src="#">view my profile</a>
+      </span>
+      <span>
+        <ng-pluralize count="user.projects.count"
+                      when="{'0': 'No projects.', '1': '1 project.', 'other': '{} projects.'}">
+        </ng-pluralize>
+      </span>
     </section>
     <section>
       <text></text>
       <div ui-view="member_stats"></div>
     </section>
     <section>
-      <div ui-view="member_micropost_form"></div>
+      <div ui-view="member_project_form"></div>
     </section>
   </aside>
   <div class="col-md-8">
     <h3>Micropost Feed</h3>
-    <div ui-view="member_micropost_feed"></div>
+    <div ui-view="member_project_feed"></div>
   </div>
 </div>
