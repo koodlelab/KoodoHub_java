@@ -1,4 +1,4 @@
-package com.koodohub.resources;
+package com.koodohub.resource;
 
 import com.google.common.base.Optional;
 import com.koodohub.domain.User;

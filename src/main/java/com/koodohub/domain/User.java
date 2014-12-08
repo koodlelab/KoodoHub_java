@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import com.koodohub.security.JsonViews;
+import com.koodohub.util.RandomUtil;
 import org.hibernate.validator.constraints.Email;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -73,11 +74,17 @@ public class User {
     @Column(name = "updatedon", nullable = false)
     private Date updatedOn;
 
+//    private boolean activated;
+
+//    @Size(min = 0, max = 20)
+//    @Column(name = "activation_key", length = 20)
+//    private String activationKey;
+
     public User() {
 
     }
 
-    public User(final String fullName, final String email, final String password,
+    public void init(final String fullName, final String email, final String password,
                 final String userName, final String role) {
         this.fullname = fullName;
         this.email = email;
@@ -85,6 +92,8 @@ public class User {
         this.password = password;
         this.password = passwordEncoder.encode(this.password);
         this.role = role;
+//        this.activated = false;
+//        this.activationKey = RandomUtil.generateActivationKey();
         this.createdOn = this.updatedOn = new Date(System.currentTimeMillis());
     }
 

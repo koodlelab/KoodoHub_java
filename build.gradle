@@ -16,14 +16,13 @@ dependencies {
     compile 'io.dropwizard:dropwizard-hibernate:0.7.1'
     compile 'io.dropwizard:dropwizard-migrations:0.7.1'
     compile 'io.dropwizard:dropwizard-assets:0.7.1'
+    compile 'io.dropwizard:dropwizard-auth:0.7.1'
+    compile 'org.apache.velocity:velocity:1.7'
+    compile 'org.apache.velocity:velocity-tools:2.0'
+    compile 'javax.mail:mail:1.4.7'
 
     compile 'org.postgresql:postgresql:9.3-1102-jdbc41'
-    compile 'org.springframework:spring-core:4.1.2.RELEASE'
-    compile 'org.springframework:spring-beans:4.1.2.RELEASE'
-    compile 'org.springframework:spring-context:4.1.2.RELEASE'
     compile 'org.springframework.security:spring-security-core:3.2.5.RELEASE'
-    compile 'org.springframework.security:spring-security-config:3.2.5.RELEASE'
-    compile 'org.springframework.security:spring-security-web:3.2.5.RELEASE'
 
     testCompile 'org.spockframework:spock-domain:0.7-groovy-2.0'
     testCompile group: 'junit', name: 'junit', version: '4.11'
