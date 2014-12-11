@@ -1,9 +1,10 @@
 package com.koodohub.jdbc;
 
-import com.google.common.base.Optional;
 import com.koodohub.domain.User;
 import io.dropwizard.hibernate.AbstractDAO;
 import org.hibernate.SessionFactory;
+
+import com.google.common.base.Optional;
 
 import java.util.List;
 
@@ -13,7 +14,7 @@ public class UserDAO extends AbstractDAO<User> {
         super(factory);
     }
 
-    public User create(User user) {
+    public User save(User user) {
         return persist(user);
     }
 

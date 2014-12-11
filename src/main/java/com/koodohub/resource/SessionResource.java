@@ -2,9 +2,9 @@ package com.koodohub.resource;
 
 import com.google.common.base.Optional;
 import com.koodohub.domain.User;
-import com.koodohub.jdbc.UserDAO;
 import com.koodohub.security.TokenUtils;
 import com.koodohub.security.UserToken;
+import com.koodohub.service.UserService;
 import io.dropwizard.auth.AuthenticationException;
 import io.dropwizard.auth.Authenticator;
 import io.dropwizard.auth.basic.BasicCredentials;
@@ -24,11 +24,11 @@ public class SessionResource {
 
     private Authenticator authManager;
 
-    private UserDAO dao;
+    private final UserService userService;
 
-    public SessionResource(final UserDAO dao, final Authenticator authManager) {
+    public SessionResource(final UserService userService, final Authenticator authManager) {
         this.authManager = authManager;
-        this.dao = dao;
+        this.userService = userService;
     }
 
     @POST
@@ -49,7 +49,7 @@ public class SessionResource {
     }
 
     private UserToken getUserToken(String loginName, User user) {
-        Optional<User> userDetails = dao.findByLogin(loginName);
+        Optional<User> userDetails = userService.getUserByLogin(loginName);
         return new UserToken(userDetails.get().getUserName(), TokenUtils.createToken(userDetails.get()));
     }
 }

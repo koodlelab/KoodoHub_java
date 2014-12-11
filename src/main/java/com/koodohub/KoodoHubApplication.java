@@ -6,6 +6,8 @@ import com.koodohub.resource.SessionResource;
 import com.koodohub.resource.UserResource;
 import com.koodohub.security.KoodoHubAuthProvider;
 import com.koodohub.security.KoodoHubAuthenticator;
+import com.koodohub.service.MailService;
+import com.koodohub.service.UserService;
 import io.dropwizard.Application;
 import io.dropwizard.assets.AssetsBundle;
 import io.dropwizard.db.DataSourceFactory;
@@ -53,9 +55,12 @@ public class KoodoHubApplication extends Application<KoodoHubConfiguration> {
         final UserDAO userDAO = new UserDAO(hibernateBundle.getSessionFactory());
         KoodoHubAuthenticator authenticator = new KoodoHubAuthenticator(userDAO);
         environment.jersey().setUrlPattern("/resource/*");
+        // save business services
+        UserService userService = new UserService(userDAO);
+        MailService mailService = new MailService(configuration);
         // register dropwizard resource
-        environment.jersey().register(new UserResource(userDAO));
-        environment.jersey().register(new SessionResource(userDAO, authenticator));
+        environment.jersey().register(new UserResource(userService, mailService));
+        environment.jersey().register(new SessionResource(userService, authenticator));
         environment.jersey().register(new KoodoHubAuthProvider(authenticator));
     }
 

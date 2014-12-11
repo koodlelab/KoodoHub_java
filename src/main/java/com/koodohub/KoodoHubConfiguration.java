@@ -13,9 +13,27 @@ public class KoodoHubConfiguration extends Configuration {
     @JsonProperty("database")
     private DataSourceFactory database = new DataSourceFactory();
 
+    @Valid
+    @NotNull
+    @JsonProperty("activationEmailTemplate")
+    private String activationEmailTemplate;
+
+    @Valid
+    @NotNull
+    @JsonProperty("emailFrom")
+    private String emailFrom;
+
 
     public DataSourceFactory getDataSourceFactory() {
         return database;
+    }
+
+    public String getActivationEmailTemplate() {
+        return activationEmailTemplate;
+    }
+
+    public String getEmailFrom() {
+        return emailFrom;
     }
 
 }

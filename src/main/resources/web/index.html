@@ -25,6 +25,7 @@
     <div ng-include="'header.html'"></div>
     <div class="container">
       <div class="container">
+        <div class="alert alert-info" ng-show="message">{{message}}</div>
         <div ui-view></div>
       </div>
       <div ng-include="'footer.html'"></div>

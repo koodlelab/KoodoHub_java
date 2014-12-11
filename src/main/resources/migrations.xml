@@ -31,4 +31,18 @@
       </column>
     </createTable>
   </changeSet>
+
+  <changeSet id="2" author="koodlelab">
+    <modifyDataType tableName="users" columnName="username" newDataType="varchar(30)"/>
+  </changeSet>
+
+  <changeSet id="3" author="koodlelab">
+    <addColumn tableName="users">
+      <column name="activationkey" type="varchar(255)"/>
+    </addColumn>
+    <addColumn tableName="users">
+      <column name="activated" type="boolean" defaultValueBoolean="true">
+      </column>
+    </addColumn>
+  </changeSet>
 </databaseChangeLog>

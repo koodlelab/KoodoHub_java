@@ -11,8 +11,7 @@ koodohub_app.controller('HomeController', function($scope, $modal, $rootScope){
   });
 
   $scope.openSignUp = function () {
-    console.log("opening signup.");
-
+    delete $rootScope.errors;  //prevent errors to show up in modal
     var modalInstance = $modal.open({
       templateUrl: 'partials/sign_up.html',
       controller: 'SignUpModalController'
@@ -20,6 +19,7 @@ koodohub_app.controller('HomeController', function($scope, $modal, $rootScope){
   };
 
   $scope.openSignIn = function () {
+    delete $rootScope.errors;
     var modalInstance = $modal.open({
       templateUrl: 'partials/sign_in.html',
       controller: 'SignInModalController'
@@ -33,7 +33,6 @@ koodohub_app.controller('SignUpModalController', function($scope, $modalInstance
     var that = this;
     $scope.user.$save(function() {
       that.closeSignUp();
-      $window.location.reload();
     });
   };
   $scope.switchToSignIn = function() {
@@ -44,6 +43,13 @@ koodohub_app.controller('SignUpModalController', function($scope, $modalInstance
     $modalInstance.dismiss('cancel');
   }
 });
+
+koodohub_app.controller('ActivateController', function($rootScope, $stateParams, ActivateService, $location){
+  console.log("activate user "+$stateParams.email);
+  ActivateService.get({email:$stateParams.email, token:$stateParams.token});
+  $location.path("/");
+  $rootScope.$broadcast('switchToSignInEvent');
+})
 
 koodohub_app.controller('MemberController', function($scope, $stateParams, MemberService){
   $scope.user = MemberService.get({username: $stateParams.username});

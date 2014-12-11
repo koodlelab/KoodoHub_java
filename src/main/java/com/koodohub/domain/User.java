@@ -13,7 +13,6 @@ import javax.validation.constraints.Size;
 import javax.ws.rs.FormParam;
 import java.sql.Date;
 
-
 @NamedQueries({
     @NamedQuery(
         name = "User.findAll",
@@ -60,7 +59,7 @@ public class User {
     @Id
 //    @NotNull
     @FormParam("username")
-    @Size(max = 10)
+    @Size(max = 30)
     @Column(name = "username", nullable = false)
     @JsonView(JsonViews.User.class)
     private String username;
@@ -74,11 +73,12 @@ public class User {
     @Column(name = "updatedon", nullable = false)
     private Date updatedOn;
 
-//    private boolean activated;
+    @Column(name = "activated", nullable = false)
+    private boolean activated;
 
-//    @Size(min = 0, max = 20)
-//    @Column(name = "activation_key", length = 20)
-//    private String activationKey;
+    @Size(min = 0, max = 20)
+    @Column(name = "activationkey", length = 255)
+    private String activationKey;
 
     public User() {
 
@@ -92,8 +92,8 @@ public class User {
         this.password = password;
         this.password = passwordEncoder.encode(this.password);
         this.role = role;
-//        this.activated = false;
-//        this.activationKey = RandomUtil.generateActivationKey();
+        this.activated = false;
+        this.activationKey = RandomUtil.generateActivationKey();
         this.createdOn = this.updatedOn = new Date(System.currentTimeMillis());
     }
 
@@ -131,6 +131,14 @@ public class User {
 
     public String getPassword() {
         return password;
+    }
+
+    public void setActivated(boolean activated) {
+        this.activated = activated;
+    }
+
+    public String getActivationKey() {
+        return activationKey;
     }
 
     public String getRole() {

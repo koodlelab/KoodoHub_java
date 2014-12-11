@@ -1,3 +1,6 @@
+emailFrom: noreply@koodohub.com
+activationEmailTemplate: activationEmail.vm
+
 server:
   type: simple
   applicationContextPath: /
@@ -58,4 +61,4 @@ logging:
       archive: true
       archivedLogFilenamePattern: ./logs/koodohub-%d.log
       archivedFileCount: 5
-      timeZone: UTC
+#      timeZone: UTC

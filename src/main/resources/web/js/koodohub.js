@@ -11,6 +11,10 @@ koodohub_app.config(function($stateProvider, $urlRouterProvider, $httpProvider) 
       url: '/',
       templateUrl: 'partials/home.html'
     })
+    .state('activate',{
+      url: '/member/activate/:email/:token',
+      controller: 'ActivateController'
+    })
     .state('member', {
       url: '/member/:username',
       views: {
@@ -36,6 +40,11 @@ koodohub_app.config(function($stateProvider, $urlRouterProvider, $httpProvider) 
    * unauthenticated requests */
   $httpProvider.interceptors.push(function ($q, $rootScope, $location) {
       return {
+        'response': function(response) {
+          $rootScope.message = response.data.message;
+          return response;
+        },
+
         'responseError': function(rejection) {
           var status = rejection.status;
           var config = rejection.config;
@@ -78,7 +87,7 @@ koodohub_app.run(function($rootScope, $http, $location, $cookieStore, $window,
   $rootScope.authenticated = false;
 
   /* Reset error when a new view is loaded */
-  $rootScope.$on('$viewContentLoaded', function() { console.log("view reloaded");
+  $rootScope.$on('$viewContentLoaded', function() {
     delete $rootScope.errors;
   });
 
