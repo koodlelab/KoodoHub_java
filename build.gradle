@@ -3,10 +3,14 @@ apply plugin: 'application'
 
 sourceCompatibility = 1.8
 version = '1.0'
-mainClassName = "com.koodohub.KoodoHubService"
+mainClassName = "com.koodohub.KoodoHubApplication"
 
 repositories {
     mavenCentral()
+}
+
+run {
+    args 'server', 'koodohub.yml'
 }
 
 task stage(dependsOn: ['clean', 'installApp'])
