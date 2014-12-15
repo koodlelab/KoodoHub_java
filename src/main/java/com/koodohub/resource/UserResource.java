@@ -56,11 +56,19 @@ public class UserResource {
     @UnitOfWork
     public Response activateAccount(@PathParam("email") String email, @PathParam("token") String token) {
         logger.debug("activate account for {}", email);
-        return Optional.fromNullable(userService.activateUser(email, token))
-                    .transform(user -> new SuccessResponse(Response.Status.ACCEPTED,
-                            user.get().getFullName()+", your account is activated.  Please sign in.").build())
-                    .or(new ErrorResponse(Response.Status.BAD_REQUEST,
-                            "Invalid activation.").build());
+        Optional<User> user = userService.activateUser(email, token);
+        if (user.isPresent()) {
+            return new SuccessResponse(Response.Status.ACCEPTED,
+                    user.get().getFullName()+", your account is activated.  Please sign in.").build();
+        } else {
+            return new ErrorResponse(Response.Status.BAD_REQUEST,
+                    "Invalid activation.").build();
+        }
+//        return Optional.fromNullable(userService.activateUser(email, token))
+//                    .transform(user -> new SuccessResponse(Response.Status.ACCEPTED,
+//                            user.get().getFullName()+", your account is activated.  Please sign in.").build())
+//                    .or(new ErrorResponse(Response.Status.BAD_REQUEST,
+//                            "Invalid activation.").build());
     }
 
     @GET

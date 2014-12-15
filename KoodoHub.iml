@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module external.linked.project.path="$MODULE_DIR$" external.root.project.path="$MODULE_DIR$" external.system.id="GRADLE" external.system.module.group="" external.system.module.version="1.0" type="JAVA_MODULE" version="4">
+<module external.linked.project.path="$MODULE_DIR$" external.root.project.path="$MODULE_DIR$" external.system.id="GRADLE" external.system.module.group="" external.system.module.version="0.1.0" type="JAVA_MODULE" version="4">
   <component name="NewModuleRootManager" inherit-compiler-output="false">
     <output url="file://$MODULE_DIR$/build/classes/main" />
     <output-test url="file://$MODULE_DIR$/build/classes/test" />
@@ -88,9 +88,7 @@
     <orderEntry type="library" exported="" name="Gradle: liquibase-core-3.1.1" level="project" />
     <orderEntry type="library" exported="" name="Gradle: liquibase-slf4j-1.2.1" level="project" />
     <orderEntry type="library" exported="" name="Gradle: snakeyaml-1.13" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: unresolved_dependency___io_dropwizard_dropwizard_domain_0_7_1" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: unresolved_dependency___org_spockframework_spock_domain_0_7_groovy_2_0" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: unresolved_dependency___io_dropwizard_dropwizard_web_0_7_1" level="project" />
     <orderEntry type="library" exported="" name="Gradle: dropwizard-assets-0.7.1" level="project" />
     <orderEntry type="library" exported="" name="Gradle: dropwizard-hibernate-0.7.1" level="project" />
     <orderEntry type="library" exported="" name="Gradle: jackson-datatype-hibernate4-2.3.3" level="project" />
@@ -106,7 +104,6 @@
     <orderEntry type="library" exported="" name="Gradle: antlr-2.7.7" level="project" />
     <orderEntry type="library" exported="" name="Gradle: jandex-1.1.0.Final" level="project" />
     <orderEntry type="library" exported="" name="Gradle: xml-apis-1.0.b2" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: unresolved_dependency___io_dropwizard_dropwizard_jdbc_0_7_1" level="project" />
     <orderEntry type="library" exported="" name="Gradle: dropwizard-auth-0.7.1" level="project" />
     <orderEntry type="library" exported="" name="Gradle: spring-aop-3.2.8.RELEASE" level="project" />
     <orderEntry type="library" exported="" name="Gradle: spring-beans-3.2.8.RELEASE" level="project" />

@@ -1,19 +1,23 @@
 apply plugin: 'java'
 apply plugin: 'application'
 
-sourceCompatibility = 1.8
-version = '1.0'
+sourceCompatibility = 1.7
+version = '0.1.0'
 mainClassName = "com.koodohub.KoodoHubApplication"
 
 repositories {
     mavenCentral()
 }
 
-jar {
-    manifest {
-        attributes 'Main-Class': mainClassName
-    }
-}
+//task fatJar(type: Jar) {
+//    manifest {
+//        attributes 'Implementation-Version': version,
+//                'Main-Class': mainClassName
+//    }
+//    baseName = project.name + '-all'
+//    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+//    with jar
+//}
 
 run {
     args 'server', 'koodohub.yml'
@@ -26,8 +30,6 @@ dependencies {
     compile 'org.apache.velocity:velocity-tools:2.0'
     compile 'javax.mail:mail:1.4.7'
     compile 'io.dropwizard:dropwizard-core:0.7.1'
-//    compile 'io.dropwizard:dropwizard-web:0.7.1'
-//    compile 'io.dropwizard:dropwizard-jdbc:0.7.1'
     compile 'io.dropwizard:dropwizard-hibernate:0.7.1'
     compile 'io.dropwizard:dropwizard-migrations:0.7.1'
     compile 'io.dropwizard:dropwizard-assets:0.7.1'
@@ -44,3 +46,4 @@ dependencies {
 task wrapper(type: Wrapper) {
     gradleVersion = '2.0'
 }
+

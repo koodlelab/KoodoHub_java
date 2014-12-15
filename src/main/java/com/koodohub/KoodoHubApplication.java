@@ -32,10 +32,6 @@ public class KoodoHubApplication extends Application<KoodoHubConfiguration> {
                 }
             };
 
-    public static void main(String[] args) throws Exception {
-        new KoodoHubApplication().run(args);
-    }
-
     @Override
     public void initialize(Bootstrap<KoodoHubConfiguration> bootstrap) {
         bootstrap.addBundle(new AssetsBundle("/web", "/", "index.html", "root"));
@@ -62,6 +58,10 @@ public class KoodoHubApplication extends Application<KoodoHubConfiguration> {
         environment.jersey().register(new UserResource(userService, mailService));
         environment.jersey().register(new SessionResource(userService, authenticator));
         environment.jersey().register(new KoodoHubAuthProvider(authenticator));
+    }
+
+    public static void main(String[] args) throws Exception {
+        new KoodoHubApplication().run(args);
     }
 
 }
