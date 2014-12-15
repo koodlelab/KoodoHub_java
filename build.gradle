@@ -9,17 +9,19 @@ repositories {
     mavenCentral()
 }
 
+task stage(dependsOn: ['clean', 'installApp'])
+
 dependencies {
-    compile 'io.dropwizard:dropwizard-domain:0.7.1'
-    compile 'io.dropwizard:dropwizard-web:0.7.1'
-    compile 'io.dropwizard:dropwizard-jdbc:0.7.1'
+    compile 'org.apache.velocity:velocity:1.7'
+    compile 'org.apache.velocity:velocity-tools:2.0'
+    compile 'javax.mail:mail:1.4.7'
+    compile 'io.dropwizard:dropwizard-core:0.7.1'
+//    compile 'io.dropwizard:dropwizard-web:0.7.1'
+//    compile 'io.dropwizard:dropwizard-jdbc:0.7.1'
     compile 'io.dropwizard:dropwizard-hibernate:0.7.1'
     compile 'io.dropwizard:dropwizard-migrations:0.7.1'
     compile 'io.dropwizard:dropwizard-assets:0.7.1'
     compile 'io.dropwizard:dropwizard-auth:0.7.1'
-    compile 'org.apache.velocity:velocity:1.7'
-    compile 'org.apache.velocity:velocity-tools:2.0'
-    compile 'javax.mail:mail:1.4.7'
 
     compile 'org.postgresql:postgresql:9.3-1102-jdbc41'
     compile 'org.springframework.security:spring-security-core:3.2.5.RELEASE'
