@@ -25,11 +25,10 @@ public class KoodoHubConfiguration extends Configuration {
     @JsonProperty("emailFrom")
     private String emailFrom;
 
-
     public DataSourceFactory getDataSourceFactory() {
         String herokuDB = System.getenv("DATABASE_URL");
         if (herokuDB != null) {
-            //Heroku postgresql handling
+            //Heroku postgresql handling.  a bit ugly
             try {
                 URI dbUri = new URI(herokuDB);
                 final String user = dbUri.getUserInfo().split(":")[0];
@@ -63,7 +62,6 @@ public class KoodoHubConfiguration extends Configuration {
     public String getEmailFrom() {
         return emailFrom;
     }
-
 
 
 }

@@ -2,7 +2,7 @@
 
 var koodohub_app = angular.module('koodohub', ['ui.router', 'ui.bootstrap', 'ngCookies', 'koodohub.service']);
 
-koodohub_app.config(function($stateProvider, $urlRouterProvider, $httpProvider) {
+koodohub_app.config(function($stateProvider, $urlRouterProvider, $httpProvider, $locationProvider) {
 
   $urlRouterProvider.otherwise('/');
 
@@ -36,6 +36,7 @@ koodohub_app.config(function($stateProvider, $urlRouterProvider, $httpProvider) 
         }
       }
     })
+
   /* Register error provider that shows message on failed requests or redirects to login page on
    * unauthenticated requests */
   $httpProvider.interceptors.push(function ($q, $rootScope, $location) {

@@ -23,17 +23,19 @@ public class MailService {
         emailFrom = configuration.getEmailFrom();
     }
 
-    public void sendActivationEmail(final String email, String username, String activationToken) {
+    public void sendActivationEmail(final String baseUri,
+                                    final String email,
+                                    String username,
+                                    String activationToken) {
         log.debug("Sending activation e-mail to '{}'", email);
         Session session = Session.getDefaultInstance(EMAIL_PROPERTIES);
-
         try{
             MimeMessage message = new MimeMessage(session);
             message.setFrom(new InternetAddress(emailFrom));
             message.addRecipient(Message.RecipientType.TO,
                     new InternetAddress(email));
             message.setSubject("Account activation");
-            message.setContent(getActivationEmail(email, username, activationToken),
+            message.setContent(getActivationEmail(baseUri, email, username, activationToken),
                     "text/html" );
            // TODO use separate thread
             Transport.send(message);
@@ -43,7 +45,7 @@ public class MailService {
         }
     }
 
-    private String getActivationEmail(String email, String username, String activationToken) {
+    private String getActivationEmail(String baseUri, String email, String username, String activationToken) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("<h1>Koodo Hub</h1>")
             .append("Hi ").append(username).append(",")
@@ -51,8 +53,8 @@ public class MailService {
             .append("Welcome to the Koodo Hub where kids watch, do, share projects and meet friends! ")
             .append("Click on the link below to activate your account:")
             .append("</p>")
-            .append("<a href=\"").append("http://localhost:8080/#/")
-            .append("member/activate/").append(email)
+            .append("<a href=\"")
+            .append(baseUri).append("member/activate/").append(email)
             .append("/").append(activationToken)
             .append("\">Activate</a>");
         String emailBody = stringBuilder.toString();

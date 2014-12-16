@@ -13,21 +13,37 @@ import org.slf4j.LoggerFactory;
 
 import javax.validation.Valid;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 
 @Path("/members")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class UserResource {
 
+    @Context
+    private UriInfo uri;
     private final UserService userService;
     private final MailService mailService;
     private final Logger logger = LoggerFactory.getLogger(UserResource.class);
+    private String baseUri = null;
 
     public UserResource(UserService userService, MailService mailService) {
         this.userService = userService;
         this.mailService = mailService;
+    }
+
+    private String getBaseUriRoutingString() {
+        if (baseUri == null) {
+            String uriString = uri.getBaseUri().toString();
+            int endIndex = uriString.indexOf(uri.getBaseUri().getPath());
+            baseUri = uriString.substring(0, endIndex);
+            baseUri += "/#/"; //required by angularJS for location routing. a bit ugly
+            // to have to know about front end tech.  TODO
+        }
+        return baseUri;
     }
 
     @POST
@@ -45,7 +61,7 @@ public class UserResource {
         User user = userService.createUser(userEntry.getUserName(), userEntry.getPassword(),
                 userEntry.getFullName(), userEntry.getEmail());
         logger.info("member {} created.", user.getFullName());
-        mailService.sendActivationEmail(user.getEmail(), user.getUserName(), user.getActivationKey());
+        mailService.sendActivationEmail(getBaseUriRoutingString(), user.getEmail(), user.getUserName(), user.getActivationKey());
         return new SuccessResponse(Response.Status.CREATED,
                 "Please check "+user.getEmail()+" to activate your account.").build();
     }
@@ -56,19 +72,19 @@ public class UserResource {
     @UnitOfWork
     public Response activateAccount(@PathParam("email") String email, @PathParam("token") String token) {
         logger.debug("activate account for {}", email);
-        Optional<User> user = userService.activateUser(email, token);
-        if (user.isPresent()) {
-            return new SuccessResponse(Response.Status.ACCEPTED,
-                    user.get().getFullName()+", your account is activated.  Please sign in.").build();
-        } else {
-            return new ErrorResponse(Response.Status.BAD_REQUEST,
-                    "Invalid activation.").build();
-        }
-//        return Optional.fromNullable(userService.activateUser(email, token))
-//                    .transform(user -> new SuccessResponse(Response.Status.ACCEPTED,
-//                            user.get().getFullName()+", your account is activated.  Please sign in.").build())
-//                    .or(new ErrorResponse(Response.Status.BAD_REQUEST,
-//                            "Invalid activation.").build());
+//        Optional<User> user = userService.activateUser(email, token);
+//        if (user.isPresent()) {
+//            return new SuccessResponse(Response.Status.ACCEPTED,
+//                    user.get().getFullName()+", your account is activated.  Please sign in.").build();
+//        } else {
+//            return new ErrorResponse(Response.Status.BAD_REQUEST,
+//                    "Invalid activation.").build();
+//        }
+        return Optional.fromNullable(userService.activateUser(email, token))
+                    .transform(user -> new SuccessResponse(Response.Status.ACCEPTED,
+                            user.get().getFullName()+", your account is activated.  Please sign in.").build())
+                    .or(new ErrorResponse(Response.Status.BAD_REQUEST,
+                            "Invalid activation.").build());
     }
 
     @GET
