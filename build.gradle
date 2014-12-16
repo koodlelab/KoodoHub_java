@@ -9,16 +9,6 @@ repositories {
     mavenCentral()
 }
 
-//task fatJar(type: Jar) {
-//    manifest {
-//        attributes 'Implementation-Version': version,
-//                'Main-Class': mainClassName
-//    }
-//    baseName = project.name + '-all'
-//    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
-//    with jar
-//}
-
 run {
     args 'server', 'koodohub.yml'
 }

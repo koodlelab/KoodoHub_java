@@ -55,9 +55,4 @@ logging:
     "com.koodohub": DEBUG
 
   appenders:
-    - type: file
-      currentLogFilename: ./logs/koodohub.log
-      archive: true
-      archivedLogFilenamePattern: ./logs/koodohub-%d.log
-      archivedFileCount: 5
-#      timeZone: UTC
+    - type: console
