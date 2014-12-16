@@ -1,4 +1,5 @@
 emailFrom: noreply@koodohub.com
+gridEmail: false
 
 server:
   type: simple

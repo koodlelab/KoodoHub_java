@@ -1,6 +1,8 @@
 package com.koodohub.service;
 
 import com.koodohub.KoodoHubConfiguration;
+import com.sendgrid.SendGrid;
+import com.sendgrid.SendGridException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,10 +19,13 @@ public class MailService {
     private static final Logger log = LoggerFactory.getLogger(MailService.class);
     private final static Properties EMAIL_PROPERTIES = System.getProperties();
     private final String emailFrom;
+    private static final String ACCOUNT_ACTIVATION_SUBJECT="Account activation";
+    private final boolean sendGridEmail;
 
     public MailService(KoodoHubConfiguration configuration) {
         EMAIL_PROPERTIES.setProperty("mail.smtp.host", "localhost");
         emailFrom = configuration.getEmailFrom();
+        sendGridEmail = configuration.getGridEmail();
     }
 
     public void sendActivationEmail(final String baseUri,
@@ -28,20 +33,46 @@ public class MailService {
                                     String username,
                                     String activationToken) {
         log.debug("Sending activation e-mail to '{}'", email);
-        Session session = Session.getDefaultInstance(EMAIL_PROPERTIES);
-        try{
-            MimeMessage message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(emailFrom));
-            message.addRecipient(Message.RecipientType.TO,
-                    new InternetAddress(email));
-            message.setSubject("Account activation");
-            message.setContent(getActivationEmail(baseUri, email, username, activationToken),
-                    "text/html" );
-           // TODO use separate thread
-            Transport.send(message);
-            log.info("Activation email sent to {}", email);
-        }catch (MessagingException mex) {
-            log.warn("E-mail could not be sent to user '{}', exception is: {}", email, mex.getMessage(), mex);
+        if (sendGridEmail) {
+            sendGridEmail(baseUri, email, username, activationToken);
+        } else {
+            try {
+                Session session = Session.getDefaultInstance(EMAIL_PROPERTIES);
+                MimeMessage message = new MimeMessage(session);
+                message.setFrom(new InternetAddress(emailFrom));
+                message.addRecipient(Message.RecipientType.TO,
+                        new InternetAddress(email));
+                message.setSubject(ACCOUNT_ACTIVATION_SUBJECT);
+                message.setContent(getActivationEmail(baseUri, email, username, activationToken),
+                        "text/html");
+                // TODO use separate thread
+                Transport.send(message);
+            } catch (MessagingException mex) {
+                log.warn("E-mail could not be sent to user '{}', exception is: {}",
+                        email, mex.getMessage(), mex);
+            }
+        }
+        log.info("Activation email sent to {}", email);
+
+    }
+
+    //used by heroku
+    private void sendGridEmail(final String baseUri,
+                               final String emailTo,
+                               String username,
+                               String activationToken) {
+        SendGrid sendgrid = new SendGrid("app32531575@heroku.com", "mmcvqt2v");
+        SendGrid.Email email = new SendGrid.Email();
+        email.addTo(emailTo);
+        email.setFrom(emailFrom);
+        email.setSubject(ACCOUNT_ACTIVATION_SUBJECT);
+        email.setText(getActivationEmail(baseUri, emailTo, username, activationToken));
+
+        try {
+            SendGrid.Response response = sendgrid.send(email);
+        } catch (SendGridException e) {
+            log.warn("E-mail could not be sent to user '{}', exception is: {}",
+                    email, e.getMessage(), e);
         }
     }
 

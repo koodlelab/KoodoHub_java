@@ -25,6 +25,11 @@ public class KoodoHubConfiguration extends Configuration {
     @JsonProperty("emailFrom")
     private String emailFrom;
 
+    @Valid
+    @NotNull
+    @JsonProperty("gridEmail")
+    private boolean gridEmail;
+
     public DataSourceFactory getDataSourceFactory() {
         String herokuDB = System.getenv("DATABASE_URL");
         if (herokuDB != null) {
@@ -63,5 +68,7 @@ public class KoodoHubConfiguration extends Configuration {
         return emailFrom;
     }
 
-
+    public boolean getGridEmail() {
+        return gridEmail;
+    }
 }

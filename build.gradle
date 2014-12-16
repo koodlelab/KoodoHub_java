@@ -24,6 +24,7 @@ dependencies {
     compile 'io.dropwizard:dropwizard-migrations:0.7.1'
     compile 'io.dropwizard:dropwizard-assets:0.7.1'
     compile 'io.dropwizard:dropwizard-auth:0.7.1'
+    compile 'com.sendgrid:sendgrid-java:2.1.0'
 
     compile 'org.postgresql:postgresql:9.3-1102-jdbc41'
     compile 'org.springframework.security:spring-security-core:3.2.5.RELEASE'
