@@ -66,8 +66,7 @@ public class MailService {
         email.addTo(emailTo);
         email.setFrom(emailFrom);
         email.setSubject(ACCOUNT_ACTIVATION_SUBJECT);
-        email.setText(getActivationEmail(baseUri, emailTo, username, activationToken));
-
+        email.setHtml(getActivationEmail(baseUri, emailTo, username, activationToken));
         try {
             SendGrid.Response response = sendgrid.send(email);
         } catch (SendGridException e) {
