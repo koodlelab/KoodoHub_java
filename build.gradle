@@ -47,3 +47,5 @@ task wrapper(type: Wrapper) {
     gradleVersion = '2.0'
 }
 
+applicationDefaultJvmArgs = ["-Ddw.server.connector.port=${System.env.PORT}"]
+
