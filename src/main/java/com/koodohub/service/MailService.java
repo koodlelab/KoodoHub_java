@@ -64,7 +64,7 @@ public class MailService {
         SendGrid sendgrid = new SendGrid("app32531575@heroku.com", "mmcvqt2v");
         SendGrid.Email email = new SendGrid.Email();
         email.addTo(emailTo);
-        email.setFrom(emailFrom);
+        email.setFrom("Koodo Hub");
         email.setSubject(ACCOUNT_ACTIVATION_SUBJECT);
         email.setHtml(getActivationEmail(baseUri, emailTo, username, activationToken));
         try {
