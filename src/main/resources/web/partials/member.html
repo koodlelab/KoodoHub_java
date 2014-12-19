@@ -1,10 +1,10 @@
 <div class="row">
   <aside class="col-md-4">
     <section>
+      <a href="#" ng-click="changeAvatar()" data-toggle="tooltip" data-placement="right" title="Change your avatar">
+        <img src="{{user.avatarLink}}"/>
+      </a>
       <h1>{{user.fullname}}</h1>
-      <span>
-        <a src="#">view my profile</a>
-      </span>
       <span>
         <ng-pluralize count="user.projects.count"
                       when="{'0': 'No projects.', '1': '1 project.', 'other': '{} projects.'}">

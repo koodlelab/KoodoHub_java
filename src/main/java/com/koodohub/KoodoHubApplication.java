@@ -39,6 +39,8 @@ public class KoodoHubApplication extends Application<KoodoHubConfiguration> {
     @Override
     public void initialize(Bootstrap<KoodoHubConfiguration> bootstrap) {
         bootstrap.addBundle(new AssetsBundle("/web", "/", "index.html", "root"));
+        bootstrap.addBundle(new AssetsBundle("/web/davatars", "/davatars", null, "davatars"));
+        bootstrap.addBundle(new AssetsBundle("/avatars", "/avatars", null, "avatars"));
         bootstrap.addBundle(new MigrationsBundle<KoodoHubConfiguration>() {
             @Override
             public DataSourceFactory getDataSourceFactory(KoodoHubConfiguration configuration) {
@@ -46,7 +48,7 @@ public class KoodoHubApplication extends Application<KoodoHubConfiguration> {
             }
         });
         bootstrap.addBundle(hibernateBundle);
-        logger.info("Koodo Hub initialized.");
+        logger.info("Koodo Hub is initialized.");
     }
 
     @Override

@@ -25,6 +25,32 @@ koodohub_app.controller('HomeController', function($scope, $modal, $rootScope){
       controller: 'SignInModalController'
     });
   }
+
+  $scope.changeAvatar = function () {
+    var modalInstance = $modal.open({
+      templateUrl: 'partials/change_avatar.html',
+      controller: 'ChangeAvatarController'
+    });
+  }
+});
+
+koodohub_app.controller('ChangeAvatarController', function($scope, $modalInstance, MemberService, $upload) {
+  $scope.closeChangeAvatar = function() {
+    $modalInstance.dismiss('cancel');
+  }
+  //TODO watch is not good option.  look for different angular js file upload plugin
+  $scope.$watch('avatar_file', function() {
+    console.log("upload file");
+    $scope.upload = $upload.upload ({
+      url: 'resource/members/uploadAvatar',
+      data: {myObj: $scope.myModelObj},
+      file: $scope.avatar_file
+    }).progress(function(evt) {
+      console.log('progress: ' + parseInt(100.0 * evt.loaded / evt.total) + '% file :'+ evt.config.file.name);
+    }).success(function(data, status, headers, config) {
+      $scope.closeChangeAvatar();
+    });
+  });
 });
 
 koodohub_app.controller('SignUpModalController', function($scope, $modalInstance, $window, MemberService, $rootScope) {
@@ -52,6 +78,10 @@ koodohub_app.controller('ActivateController', function($rootScope, $stateParams,
 })
 
 koodohub_app.controller('MemberController', function($scope, $stateParams, MemberService){
+  $scope.user = MemberService.get({username: $stateParams.username});
+});
+
+koodohub_app.controller('SettingsController', function($scope, $stateParams, MemberService){
   $scope.user = MemberService.get({username: $stateParams.username});
 });
 

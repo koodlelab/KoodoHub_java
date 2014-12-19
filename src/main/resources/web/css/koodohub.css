@@ -24,6 +24,18 @@ h1, h2, h3, h4, h5, h6 {
   line-height: 1;
 }
 
+/*a.tooltip {*/
+  /*position: relative;*/
+/*}*/
+/*a.tooltip > div {*/
+  /*display: none;*/
+  /*position: absolute;*/
+  /*bottom: 100%;*/
+  /*left: 50%;*/
+  /*margin-left: -150px;*/
+  /*width: 300px;*/
+/*}*/
+
 .checkbox {
   margin-top: -20px;
   margin-bottom: 10px;

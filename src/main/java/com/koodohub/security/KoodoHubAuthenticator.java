@@ -23,7 +23,9 @@ public class KoodoHubAuthenticator implements Authenticator<BasicCredentials, Us
         log.debug("authenticate user {}", credentials.getUsername());
         Optional<User> userDetails = null;
         userDetails = userDAO.findByLogin(credentials.getUsername());
-        if (!userDetails.isPresent() || !userDetails.get().isCorrectPassword(credentials.getPassword())) {
+        if (!userDetails.isPresent()
+                || !userDetails.get().isCorrectPassword(credentials.getPassword())
+                || !userDetails.get().isActivated()) {
             throw new InvalidCredentialException("Access denied.");
         }
         return userDetails;

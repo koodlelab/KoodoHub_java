@@ -1,6 +1,7 @@
 'use strict';
 
-var koodohub_app = angular.module('koodohub', ['ui.router', 'ui.bootstrap', 'ngCookies', 'koodohub.service']);
+var koodohub_app = angular.module('koodohub', ['ui.router',
+  'ui.bootstrap', 'ngCookies', 'koodohub.service', 'angularFileUpload']);
 
 koodohub_app.config(function($stateProvider, $urlRouterProvider, $httpProvider, $locationProvider) {
 
@@ -14,6 +15,10 @@ koodohub_app.config(function($stateProvider, $urlRouterProvider, $httpProvider, 
     .state('activate',{
       url: '/member/activate/:email/:token',
       controller: 'ActivateController'
+    })
+    .state('member_profile', {
+      templateUrl: 'partials/member_edit_profile.html',
+      controller: 'SettingController'
     })
     .state('member', {
       url: '/member/:username',

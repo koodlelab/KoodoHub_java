@@ -76,9 +76,12 @@ public class User {
     @Column(name = "activated", nullable = false)
     private boolean activated;
 
-    @Size(min = 0, max = 20)
+    @Size(min = 0, max = 255)
     @Column(name = "activationkey", length = 255)
     private String activationKey;
+
+    @Column(name = "avatarlink", length = 255)
+    private String avatarLink;
 
     public User() {
 
@@ -95,6 +98,7 @@ public class User {
         this.activated = false;
         this.activationKey = RandomUtil.generateActivationKey();
         this.createdOn = this.updatedOn = new Date(System.currentTimeMillis());
+        this.avatarLink = "davatars/avatar_"+RandomUtil.randInt(1, 7)+".jpg";
     }
 
     public boolean isCorrectPassword(final String password) {
@@ -117,6 +121,10 @@ public class User {
         this.username = username;
     }
 
+    public void setAvatarLink(String avatarLink) {
+        this.avatarLink = avatarLink;
+    }
+
     public String getFullName() {
         return fullname;
     }
@@ -137,6 +145,10 @@ public class User {
         this.activated = activated;
     }
 
+    public boolean isActivated() {
+        return this.activated;
+    }
+
     public String getActivationKey() {
         return activationKey;
     }
@@ -151,5 +163,9 @@ public class User {
 
     public Date getUpdatedOn() {
         return updatedOn;
+    }
+
+    public String getAvatarLink() {
+        return avatarLink;
     }
 }

@@ -60,7 +60,6 @@
     <orderEntry type="library" exported="" name="Gradle: log4j-over-slf4j-1.7.6" level="project" />
     <orderEntry type="library" exported="" name="Gradle: jcl-over-slf4j-1.7.6" level="project" />
     <orderEntry type="library" exported="" name="Gradle: jetty-util-9.0.7.v20131107" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: jersey-core-1.18.1" level="project" />
     <orderEntry type="library" exported="" name="Gradle: jersey-server-1.18.1" level="project" />
     <orderEntry type="library" exported="" name="Gradle: jersey-servlet-1.18.1" level="project" />
     <orderEntry type="library" exported="" name="Gradle: metrics-jersey-3.0.2" level="project" />
@@ -131,6 +130,10 @@
     <orderEntry type="library" exported="" name="Gradle: httpclient-4.3.4" level="project" />
     <orderEntry type="library" exported="" name="Gradle: httpmime-4.3.4" level="project" />
     <orderEntry type="library" exported="" name="Gradle: commons-codec-1.6" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: jersey-multipart-1.18.3" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: mimepull-1.9.3" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: jersey-core-1.18.3" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: dropwizard-configurable-assets-bundle-0.2.2" level="project" />
   </component>
 </module>
 

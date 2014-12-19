@@ -45,4 +45,12 @@
       </column>
     </addColumn>
   </changeSet>
+
+  <changeSet id="4" author="koodlelab">
+    <addColumn tableName="users">
+      <column name="avatarlink" type="varchar(255)" defaultValue="/davatars/avatar_1.jpg">
+        <constraints nullable="false"/>
+      </column>
+    </addColumn>
+  </changeSet>
 </databaseChangeLog>

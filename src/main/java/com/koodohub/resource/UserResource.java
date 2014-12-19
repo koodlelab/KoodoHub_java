@@ -6,6 +6,8 @@ import com.koodohub.domain.SuccessResponse;
 import com.koodohub.domain.User;
 import com.koodohub.service.MailService;
 import com.koodohub.service.UserService;
+import com.sun.jersey.core.header.FormDataContentDisposition;
+import com.sun.jersey.multipart.FormDataParam;
 import io.dropwizard.auth.Auth;
 import io.dropwizard.hibernate.UnitOfWork;
 import org.slf4j.Logger;
@@ -17,6 +19,11 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import java.io.*;
+import java.nio.file.CopyOption;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 
 @Path("/members")
 @Produces(MediaType.APPLICATION_JSON)
@@ -72,14 +79,6 @@ public class UserResource {
     @UnitOfWork
     public Response activateAccount(@PathParam("email") String email, @PathParam("token") String token) {
         logger.debug("activate account for {}", email);
-//        Optional<User> user = userService.activateUser(email, token);
-//        if (user.isPresent()) {
-//            return new SuccessResponse(Response.Status.ACCEPTED,
-//                    user.get().getFullName()+", your account is activated.  Please sign in.").build();
-//        } else {
-//            return new ErrorResponse(Response.Status.BAD_REQUEST,
-//                    "Invalid activation.").build();
-//        }
         return Optional.fromNullable(userService.activateUser(email, token))
                     .transform(user -> new SuccessResponse(Response.Status.ACCEPTED,
                             user.get().getFullName()+", your account is activated.  Please sign in.").build())
@@ -98,6 +97,29 @@ public class UserResource {
             throw new WebApplicationException(404);
         }
         return userInfo.get();
+    }
+
+    @POST
+    @Path("/uploadAvatar")
+    @UnitOfWork
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    public Response uploadAvatar(@Auth User user,
+            @FormDataParam("file") final InputStream uploadStream,
+            @FormDataParam("file") FormDataContentDisposition fileDetail) {
+        java.nio.file.Path outputPath = FileSystems.getDefault().getPath("media/avatars/", fileDetail.getFileName());
+        try {
+            Files.copy(uploadStream, outputPath, StandardCopyOption.REPLACE_EXISTING);
+            user.setAvatarLink("avatars/"+fileDetail.getFileName());
+            return new SuccessResponse(Response.Status.OK,
+                    "Picture is uploaded.").build();
+        } catch (IOException e) {
+            logger.error("Failed to save file {} for user {}",
+                    fileDetail.getFileName(),
+                    user.getUserName(),
+                    e);
+            return new ErrorResponse(Response.Status.INTERNAL_SERVER_ERROR,
+                    "Unable to upload picture.").build();
+        }
     }
 
 }
