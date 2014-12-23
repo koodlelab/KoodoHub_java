@@ -26,32 +26,56 @@ koodohub_app.controller('HomeController', function($scope, $modal, $rootScope){
     });
   }
 
-  $scope.changeAvatar = function () {
+  $scope.updateSettings = function () {
     var modalInstance = $modal.open({
-      templateUrl: 'partials/change_avatar.html',
-      controller: 'ChangeAvatarController'
-    });
+      templateUrl: 'partials/member_settings.html',
+      controller: 'updateSettingsController'
+    })
+  }
+
+  $scope.postNewProject = function () {
+    var modalInstance = $modal.open({
+      templateUrl: 'partials/post_new_project.html',
+      controller: 'postNewProjectController'
+    })
   }
 });
 
-koodohub_app.controller('ChangeAvatarController', function($scope, $modalInstance, MemberService, $upload) {
-  $scope.closeChangeAvatar = function() {
-    $modalInstance.dismiss('cancel');
-  }
-  //TODO watch is not good option.  look for different angular js file upload plugin
-  $scope.$watch('avatar_file', function() {
-    console.log("upload file");
+koodohub_app.controller('SettingsController', function($scope, $window, SettingsService, $upload) {
+
+//  $scope.$watch('user.avatar_file', function() {
+//    console.log("upload file");
     $scope.upload = $upload.upload ({
       url: 'resource/members/uploadAvatar',
       data: {myObj: $scope.myModelObj},
-      file: $scope.avatar_file
+      file: $scope.user.avatar_file
     }).progress(function(evt) {
       console.log('progress: ' + parseInt(100.0 * evt.loaded / evt.total) + '% file :'+ evt.config.file.name);
     }).success(function(data, status, headers, config) {
-      $scope.closeChangeAvatar();
+      $window.location.reload();
     });
-  });
+//  });
+  $scope.updateEmail = function() {
+    console.log("Update email");
+    SettingsService.updateEmail({email:$scope.user.email});
+  }
+  $scope.updatePassword = function() {
+    console.log("Update password.");
+    SettingsService.updatePassword({oldPassword:$scope.user.oldPassword, newPassword:$scope.user.newPassword});
+  }
 });
+
+koodohub_app.controller('postNewProjectController', function($scope, $modalInstance, ProjectService) {
+  $scope.closePostNewProject = function() {
+    $modalInstance.dismiss('cancel');
+  }
+  $scope.project = new ProjectService();
+  $scope.save = function() {
+    $scope.project.$save(function() {
+      $scope.closePostNewProject();
+    })
+  }
+})
 
 koodohub_app.controller('SignUpModalController', function($scope, $modalInstance, $window, MemberService, $rootScope) {
   $scope.user = new MemberService();
@@ -71,17 +95,12 @@ koodohub_app.controller('SignUpModalController', function($scope, $modalInstance
 });
 
 koodohub_app.controller('ActivateController', function($rootScope, $stateParams, ActivateService, $location){
-  console.log("activate user "+$stateParams.email);
   ActivateService.get({email:$stateParams.email, token:$stateParams.token});
   $location.path("/");
   $rootScope.$broadcast('switchToSignInEvent');
 })
 
 koodohub_app.controller('MemberController', function($scope, $stateParams, MemberService){
-  $scope.user = MemberService.get({username: $stateParams.username});
-});
-
-koodohub_app.controller('SettingsController', function($scope, $stateParams, MemberService){
   $scope.user = MemberService.get({username: $stateParams.username});
 });
 
@@ -99,7 +118,6 @@ koodohub_app.controller('SignInModalController', function($scope, SessionService
         $.cookie(AUTH_TOKEN, authToken, { expires: 365 });
       }
       $rootScope.user = $scope.session.loginName;
-      console.log("signed in");
       $window.location.reload();
     });
   };

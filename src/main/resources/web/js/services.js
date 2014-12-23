@@ -12,8 +12,26 @@ services.factory('ActivateService', function ($resource) {
   });
 });
 
-services.factory('SessionService', function($resource) {
+services.factory('SettingsService', function ($resource) {
+  return $resource('resource/members/:path', {path: '@path'
+  }, {
+    'updateEmail': {
+      method: 'GET',
+      params: {path:'updateEmail'},
+      isArray: false}
+  }, {
+    'updatePassword': {
+      method: 'GET',
+      params: {path:'updatePassword'},
+      isArray: false}
+  })
+});
 
+services.factory('ProjectService', function ($resource) {
+  return $resource('resource/projects/:id');
+});
+
+services.factory('SessionService', function($resource) {
   return $resource('resource/session/:action', {},
     {
       authenticate: {

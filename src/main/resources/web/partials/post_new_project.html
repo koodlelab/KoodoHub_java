@@ -1,0 +1,18 @@
+<h2>Add project</h2>
+  <alert type="danger" ng-show="errors">
+    <div ng-repeat="error in errors">{{error}}</div>
+  </alert>
+</div>
+<div class="row">
+  <div class="col-md-6 col-md-offset-3">
+    <form ng-submit="postNewProject()">
+      <div class="form-group">
+        <Label>Title</Label>
+        <input type="text" ng-model="project.title" ng-required="true" class="form-control"/>
+      </div>
+        <div class="form-group">
+          <input type="submit" value="Post" class="btn btn-primary"/>
+        </div>
+    </form>
+  </div>
+</div>

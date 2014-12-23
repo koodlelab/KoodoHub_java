@@ -41,7 +41,6 @@ public class KoodoHubAuthProvider implements InjectableProvider <Auth, Parameter
             // This is where the credentials are extracted from the request
             final String authToken = c.getRequest().getHeaderValue(CUSTOM_HEADER);
             String userName = TokenUtils.getUserNameFromToken(authToken);
-            System.out.println("token:"+authToken);
             try {
                 if (authToken != null) {
                     final Optional<User> result = authenticator.authenticate(

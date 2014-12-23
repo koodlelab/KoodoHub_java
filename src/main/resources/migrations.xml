@@ -53,4 +53,28 @@
       </column>
     </addColumn>
   </changeSet>
+
+  <changeSet id="5" author="koodlelab">
+    <createTable tableName="projects">
+      <column name="id" type="int" autoIncrement="true">
+        <constraints primaryKey="true" nullable="false"/>
+      </column>
+      <column name="title" type="varchar(255)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="medialink" type="varchar(255)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="owner" type="varchar(30)">
+        <constraints foreignKeyName="username" references="users" nullable="false" />
+      </column>
+      <column name="description" type="varchar(255)">
+        <constraints nullable="true"/>
+      </column>
+      <column name="how" type="varchar(1000)">
+        <constraints nullable="true"/>
+      </column>
+    </createTable>
+  </changeSet>
+
 </databaseChangeLog>

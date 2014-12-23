@@ -1,0 +1,44 @@
+<h2>Update settings</h2>
+<alert type="danger" ng-show="errors">
+  <div ng-repeat="error in errors">{{error}}</div>
+</alert>
+<div class="row">
+  <div class="col-md-6 col-md-offset-3">
+    <fieldset class="setting-border">
+      <legend class="setting-border">Change avatar</legend>
+      <img src="{{user.avatarLink}}" height="100" width="100" class="img-thumbnail"/>
+      <button ng-file-select ng-model="user.avatar_file"
+              ng-file-change="fileSelected($files, $event)"
+              ng-submit="upload" multiple="false" class="btn btn-primary">Upload new picture</button>
+    </fieldset>
+    <form ng-submit="updateEmail()">
+      <fieldset class="setting-border">
+        <legend class="setting-border">Change email</legend>
+        <div class="form_group">
+          <input type="text" ng-model="user.email" ng-required="true" placeholder="user.email" class="form-control"/>
+        </div>
+        <br>
+        <div class="form-group">
+          <input type="submit" value="Change email" class="btn btn-primary"/>
+        </div>
+      </fieldset>
+    </form>
+    <form ng-submit="updatePassword()">
+      <fieldset class="setting-border">
+        <legend class="setting-border">Change password</legend>
+        <div class="form-group">
+          <label>Old password</label>
+          <input type="password" ng-model="user.oldPassword" ng-required="true" class="form-control"/>
+        </div>
+        <div class="form-group">
+          <label>New password</label>
+          <input type="password" ng-model="user.newPassword" ng-required="true" class="form-control"/>
+        </div>
+        <div class="form-group">
+          <input type="submit" value="Change password" class="btn btn-primary"/>
+        </div>
+      </fieldset>
+    </form>
+  </div>
+</div>
+</div>

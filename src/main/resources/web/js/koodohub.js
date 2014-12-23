@@ -16,9 +16,14 @@ koodohub_app.config(function($stateProvider, $urlRouterProvider, $httpProvider, 
       url: '/member/activate/:email/:token',
       controller: 'ActivateController'
     })
-    .state('member_profile', {
-      templateUrl: 'partials/member_edit_profile.html',
-      controller: 'SettingController'
+    .state('settings', {
+      url: '/settings',
+      templateUrl: 'partials/member_settings.html',
+      controller: 'SettingsController'
+    })
+    .state('newproject', {
+      url: '/newProject',
+      templateUrl: 'partials/post_new_project.html'
     })
     .state('member', {
       url: '/member/:username',

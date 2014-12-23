@@ -122,4 +122,32 @@ public class UserResource {
         }
     }
 
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @UnitOfWork
+    @Path("/updateEmail")
+    public Response updateEmail(@Auth User user,
+            @QueryParam("email") String email) {
+        logger.info("update user {}", user.getUserName());
+        user.setEmail(email);
+        return new SuccessResponse(Response.Status.OK,
+                "Email is updated.").build();
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @UnitOfWork
+    @Path("/updatePassword")
+    public Response updatePassword(@Auth User user,
+                                @QueryParam("oldPassword") String oldPassword,
+                                @QueryParam("newPassword") String newPassword) {
+        logger.info("update user {}", user.getUserName());
+        //TODO validation of old password if password is changed.
+        user.updatePassword(newPassword);
+        return new SuccessResponse(Response.Status.OK,
+                "Password is updated.").build();
+    }
+
 }

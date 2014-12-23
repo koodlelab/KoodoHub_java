@@ -92,8 +92,7 @@ public class User {
         this.fullname = fullName;
         this.email = email;
         this.username = userName;
-        this.password = password;
-        this.password = passwordEncoder.encode(this.password);
+        this.password = passwordEncoder.encode(password);
         this.role = role;
         this.activated = false;
         this.activationKey = RandomUtil.generateActivationKey();
@@ -113,8 +112,8 @@ public class User {
         this.email = email;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void updatePassword(String password) {
+        this.password = passwordEncoder.encode(password);
     }
 
     public void setUsername(String username) {
