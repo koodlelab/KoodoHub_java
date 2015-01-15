@@ -24,6 +24,7 @@ import java.nio.file.CopyOption;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.util.List;
 
 @Path("/members")
 @Produces(MediaType.APPLICATION_JSON)
@@ -71,6 +72,15 @@ public class UserResource {
         mailService.sendActivationEmail(getBaseUriRoutingString(), user.getEmail(), user.getUserName(), user.getActivationKey());
         return new SuccessResponse(Response.Status.CREATED,
                 "Please check "+user.getEmail()+" to activate your account.").build();
+    }
+
+    @GET
+    @UnitOfWork
+    public List<User> getOtherUsers(@Auth User user) {
+        logger.info("get all members.");
+        List<User> users = userService.getAllUsers();
+        users.remove(user);
+        return users;
     }
 
     @GET
@@ -150,4 +160,15 @@ public class UserResource {
                 "Password is updated.").build();
     }
 
+    @GET
+    @Path("/getFollowers")
+    public List<String> getFollowers(@QueryParam("username") String username) {
+        return userService.getFollowedBy(username);
+    }
+
+    @GET
+    @Path("/getFollowings")
+    public List<String> getFollowings(@PathParam("username") String username) {
+        return userService.getFollowings(username);
+    }
 }

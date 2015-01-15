@@ -77,4 +77,18 @@
     </createTable>
   </changeSet>
 
+  <changeSet id="6" author="koodlelab">
+    <createTable tableName="relationships">
+      <column name="id" type="int" autoIncrement="true">
+        <constraints primaryKey="true" nullable="false"/>
+      </column>
+      <column name="follower" type="varchar(30)">
+        <constraints foreignKeyName="username" references="users" nullable="false" />
+      </column>
+      <column name="followed" type="varchar(30)">
+        <constraints foreignKeyName="username" references="users" nullable="false" />
+      </column>
+    </createTable>
+  </changeSet>
+
 </databaseChangeLog>

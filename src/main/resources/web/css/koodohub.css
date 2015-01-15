@@ -2,8 +2,15 @@ html {
   overflow-y: scroll;
 }
 
+@font-face {
+  font-family: "sans-serif";
+  src: 'vendor/fonts/Aaargh.ttf';
+}
+
 body {
   margin-top: 70px;
+  -webkit-font-smoothing: antialiased;
+  font-family: ApexRounded,sans-serif;
 }
 
 @media (max-width: 980px) {
@@ -142,4 +149,101 @@ legend.setting-border {
   /*font-size: 1.2em !important;*/
   /*font-weight: bold !important;*/
   /*text-align: left !important;*/
+}
+
+.members {
+  list-style: none;
+  margin: 0;
+}
+.members li {
+  overflow: auto;
+  padding: 10px 0;
+  border-top: 1px solid #eaeaea;
+}
+.members li:last-child {
+   border-bottom: 1px solid #eaeaea;
+}
+
+/* skin.css Style*/
+.upload-drop-zone {
+  color: #ccc;
+  border-style: dashed;
+  border-color: #ccc;
+  line-height: 200px;
+  text-align: center;
+}
+/*.upload-drop-zone.drop {*/
+  /*color: #222;*/
+  /*border-color: #222;*/
+/*}*/
+.upload-drop-zone button{
+  padding: 0;
+  border: none;
+  background: none;
+}
+
+.upload-drop-zone.file-button{
+  position: relative;
+  cursor: pointer;
+  display: inline-block;
+  vertical-align: middle;
+  height: 50px;
+  overflow: hidden;
+  /*display:inline;*/
+}
+
+.add-project-file-frame {
+  /*display: table;*/
+  margin: 8px;
+  height: 200px;
+  width: 180px;
+  border: 1px solid #ddd;
+  box-shadow: 1px 1px 5px 0px #a2958a;
+  padding: 6px;
+  float: left;
+  text-align: center;
+  vertical-align: middle;
+}
+
+/*.upload-drop-zone.file-button a, .upload-drop-zone.file-button input {*/
+  /*position: absolute;*/
+  /*width: 100%;*/
+/*}*/
+
+.file-button {
+  line-height: 200px;
+}
+
+.file-button input {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.file-actions {
+  text-align: left;
+}
+
+.file-footer-buttons {
+  float: right;
+}
+
+.file-thumbnail-footer .file-caption-name {
+  padding-top:4px;
+  font-size: 11px;
+  color: #777;
+}
+
+::-webkit-input-placeholder { /* WebKit browsers */
+  color:    #ccc;
+}
+:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+  color:    #ccc;
+  opacity:  1;
+}
+::-moz-placeholder { /* Mozilla Firefox 19+ */
+  color:    #ccc;
+  opacity:  1;
+}
+:-ms-input-placeholder { /* Internet Explorer 10+ */
+  color:    #ccc;
 }

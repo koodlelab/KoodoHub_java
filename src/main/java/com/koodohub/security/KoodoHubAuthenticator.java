@@ -35,6 +35,7 @@ public class KoodoHubAuthenticator implements Authenticator<BasicCredentials, Us
     }
 
     public Optional<User> authenticate(String userName, String authToken) throws AuthenticationException {
+        log.debug("authenticating user {} with token {}", userName, authToken);
         Optional<User> userDetails = this.userDAO.findByUsername(userName);
         if (TokenUtils.validateToken(authToken, userDetails.get())) {
             return userDetails;

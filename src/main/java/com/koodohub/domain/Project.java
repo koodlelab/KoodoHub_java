@@ -1,12 +1,15 @@
 package com.koodohub.domain;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.Size;
 import javax.ws.rs.FormParam;
 
+@NamedQueries({
+        @NamedQuery(
+                name = "Project.findByUsername",
+                query = "from Project p where p.username = :username"
+        )
+})
 @Entity
 @Table(name = "projects")
 public class Project {
@@ -19,11 +22,11 @@ public class Project {
     @Column(name = "title", nullable = false)
     private String title;
 
-    @Column(name = "email", nullable = false)
+    @Column(name = "owner", nullable = false)
     private String owner;
 
     @Size(min = 6, max = 100)
-    @Column(name = "medialink", nullable = false)
+    @Column(name = "medialink", nullable = true)
     private String mediaLink;
 
     @Size(max = 255)

@@ -1,0 +1,10 @@
+<h2>All members</h2>
+
+<ul class="members">
+  <div ng-repeat="member in members">
+    <li>
+      <img alt="{{member.fullname}}" src="{{member.avatarLink}}" class="img-rounded" width="100" height="100"/>
+      <a href="#/member/{{member.username}}">{{member.fullname}}</a>
+    </li>
+  </div>
+</ul>

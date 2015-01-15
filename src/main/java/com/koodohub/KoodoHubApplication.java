@@ -1,6 +1,9 @@
 package com.koodohub;
 
+import com.koodohub.domain.Project;
 import com.koodohub.domain.User;
+import com.koodohub.jdbc.ProjectDAO;
+import com.koodohub.jdbc.RelationshipDAO;
 import com.koodohub.jdbc.UserDAO;
 import com.koodohub.resource.SessionResource;
 import com.koodohub.resource.UserResource;
@@ -39,8 +42,9 @@ public class KoodoHubApplication extends Application<KoodoHubConfiguration> {
     @Override
     public void initialize(Bootstrap<KoodoHubConfiguration> bootstrap) {
         bootstrap.addBundle(new AssetsBundle("/web", "/", "index.html", "root"));
-        bootstrap.addBundle(new AssetsBundle("/web/davatars", "/davatars", null, "davatars"));
-        bootstrap.addBundle(new AssetsBundle("/avatars", "/avatars", null, "avatars"));
+        bootstrap.addBundle(new AssetsBundle("/web/vendor", "/vendor", null, "vendor"));
+        bootstrap.addBundle(new AssetsBundle("/web/davatars-tmp", "/davatars-tmp", null, "davatars"));
+//        bootstrap.addBundle(new AssetsBundle("/avatars", "/avatars", null, "avatars"));
         bootstrap.addBundle(new MigrationsBundle<KoodoHubConfiguration>() {
             @Override
             public DataSourceFactory getDataSourceFactory(KoodoHubConfiguration configuration) {
@@ -55,10 +59,13 @@ public class KoodoHubApplication extends Application<KoodoHubConfiguration> {
     public void run(KoodoHubConfiguration configuration, Environment environment) throws Exception {
 
         final UserDAO userDAO = new UserDAO(hibernateBundle.getSessionFactory());
+        final ProjectDAO projectDAO = new ProjectDAO(hibernateBundle.getSessionFactory());
+        final RelationshipDAO relationshipDAO = new RelationshipDAO(hibernateBundle.getSessionFactory());
+
         KoodoHubAuthenticator authenticator = new KoodoHubAuthenticator(userDAO);
         environment.jersey().setUrlPattern("/resource/*");
         // save business services
-        UserService userService = new UserService(userDAO);
+        UserService userService = new UserService(userDAO, relationshipDAO);
         MailService mailService = new MailService(configuration);
         // register dropwizard resource
         environment.jersey().register(new UserResource(userService, mailService));

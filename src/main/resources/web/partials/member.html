@@ -1,10 +1,8 @@
 <div class="row">
   <aside class="col-md-3">
     <section>
-      <a href="#/settings" data-toggle="tooltip" data-placement="right" title="Change your avatar">
-        <img src="{{user.avatarLink}}" height="100" width="100" class="img-rounded"/>
-      </a>
-      <h1>{{user.fullname}}</h1>
+      <img src="{{member.avatarLink}}" height="100" width="100" class="img-rounded"/>
+      <h1>{{member.fullname}}</h1>
       <span>
         <ng-pluralize count="user.projects.count"
                       when="{'0': 'No projects.', '1': '1 project.', 'other': '{} projects.'}">
@@ -15,43 +13,16 @@
       <text></text>
       <div ui-view="member_stats"></div>
     </section>
-    <section>
-      <div ui-view="member_project_form"></div>
-    </section>
   </aside>
   <div class="col-md-9">
     <div role="tabpanel">
-
       <!-- Nav tabs -->
       <ul class="nav nav-tabs" role="tablist">
-        <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Home</a></li>
         <li role="presentation"><a href="#portfolio" aria-controls="portfolio" role="tab" data-toggle="tab">Portfolio</a></li>
-        <li role="presentation"><a href="#addNewProject" aria-controls="addNewProject" role="tab" data-toggle="tab">Add new project</a></li>
       </ul>
-
       <!-- Tab panes -->
       <div class="tab-content">
-        <div role="tabpanel" class="tab-pane active" id="home">Home</div>
         <div role="tabpanel" class="tab-pane" id="portfolio">Portfolio</div>
-        <div role="tabpanel" class="tab-pane" id="addNewProject">
-          <alert type="danger" ng-show="errors">
-            <div ng-repeat="error in errors">{{error}}</div>
-          </alert>
-          <br>
-          <div class="row">
-            <div class="col-md-6 col-md-offset-0">
-              <form ng-submit="postNewProject()">
-                <div class="form-group">
-                  <Label>Title</Label>
-                  <input type="text" ng-model="project.title" ng-required="true" class="form-control"/>
-                </div>
-                <div class="form-group">
-                  <input type="submit" value="Post" class="btn btn-primary"/>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   </div>

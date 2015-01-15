@@ -6,10 +6,23 @@
   <div class="col-md-6 col-md-offset-3">
     <fieldset class="setting-border">
       <legend class="setting-border">Change avatar</legend>
-      <img src="{{user.avatarLink}}" height="100" width="100" class="img-thumbnail"/>
-      <button ng-file-select ng-model="user.avatar_file"
-              ng-file-change="fileSelected($files, $event)"
-              ng-submit="upload" multiple="false" class="btn btn-primary">Upload new picture</button>
+      <div class="form_group">
+        <img src="{{user.avatarLink}}" height="100" width="100" class="img-thumbnail"/>
+        <div class="progress" ng-show="uploadPercentage">
+          <div class="progress-bar progress-bar-success" role="progressbar"
+               aria-valuenow="10" aria-valuemin="0" aria-valuemax="100"
+               style="width:{{uploadPercentage}}%;">
+            <span>{{uploadPercentage}}% Complete (Sucess)</span>
+          </div>
+        </div>
+      </div>
+      <br>
+      <div class="form_group">
+        <button ng-file-select ng-model="user.avatar_file"
+                ng-file-change="upload(user.avatar_file)"
+                ng-accept="'image/*'"
+                multiple="false" class="btn btn-primary">Upload new picture</button>
+      </div>
     </fieldset>
     <form ng-submit="updateEmail()">
       <fieldset class="setting-border">

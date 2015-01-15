@@ -25,27 +25,16 @@ koodohub_app.config(function($stateProvider, $urlRouterProvider, $httpProvider, 
       url: '/newProject',
       templateUrl: 'partials/post_new_project.html'
     })
+    .state('members',{
+      url: '/members',
+      templateUrl: 'partials/members.html',
+      controller: 'MembersController'
+    })
     .state('member', {
       url: '/member/:username',
-      views: {
-        '': {
-          templateUrl: 'partials/member.html',
-          controller: 'MemberController'
-        },
-//          "member_info@member": {
-//            templateUrl: 'partials/member_info.html'
-//          },
-        "member_stats@member": {
-          templateUrl: 'partials/member_stats.html'
-        },
-        "member_micropost_form@member": {
-          templateUrl: 'partials/member_project_form.html'
-        },
-        "member_micropost_feed@member": {
-          templateUrl: 'partials/member_project_feed.html'
-        }
-      }
-    })
+      templateUrl: 'partials/member.html',
+      controller: 'MemberController'
+    });
 
   /* Register error provider that shows message on failed requests or redirects to login page on
    * unauthenticated requests */
@@ -115,12 +104,12 @@ koodohub_app.run(function($rootScope, $http, $location, $cookieStore, $window,
   var authToken = $window.sessionStorage.token;
   if (authToken === undefined) {
     authToken = $.cookie(AUTH_TOKEN);
+    $window.sessionStorage.token = authToken;
   }
   if (authToken !== undefined) {
     MemberService.get({username: authToken.split(':')[0]}, function(user) {
       $rootScope.user = user;
       $rootScope.authenticated = true;
-      $window.sessionStorage.token = authToken;
       $location.path(originalPath);
     });
   }
