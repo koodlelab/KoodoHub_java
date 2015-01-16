@@ -7,46 +7,47 @@
   <form ng-submit="postNewProject()">
     <div class="newProject">
     <div class="form-group">
-      <input type="text" ng-model="project.title" ng-required="true"
-             placeholder="Title - describe project in a few exciting words" class="form-control"/>
+      <input type="text" ng-model="title" ng-required="true"
+             placeholder="Give a title in a few exciting words" class="form-control"/>
     </div>
     <div class="form-group">
       <textarea id="micropost_content"
                 class="form-control"
                 maxlength="255"
                 ng-trim="false"
-                placeholder="Introduction - introduce project a bit more in less than 255 characters"
-                ng-model="project.description"
+                placeholder="Introduce project in less than 255 characters"
+                ng-model="description"
                 ng-required="true" rows="5"
-                ng-keyup="remaining=(255-project.description.length)"
+                ng-keyup="remaining=(255-description.length)"
                 ng-init="remaining=255"></textarea>
-      <p ng-show="remaining<255">{{remaining}}</p>
+      <alert type="warning" ng-show="remaining<20">Approaching 255 characters limit. {{remaining}}</alert>
     </div>
     <div class="form_group">
       <div class="upload-drop-zone">
-        <div class="row" >
+        <div class="row">
           <div ng-file-drop id="drop-zone" class="drop-box"
                drag-over-class="{accept:'dragover', reject:'dragover-err', delay:100}" ng-model="new_files"
                ng-multiple="true" allow-dir="true" accept="image/*,video/*" ng-file-change="addFiles(new_files)">
             <div class="thumbnail">
               <dynamic-preview/>
-              <!--<img ng-src="{{image.dataUrl}}" width="180"/>-->
             </div>
             <div class="file-button" ng-show="project_files.length===0" ng-file-select ng-model="new_files" ng-required="true"
                  ng-multiple="true" allow-dir="true" accept="image/*,video/*" ng-file-change="addFiles(new_files)">
-              <span></span>
               <span class="glyphicon glyphicon-camera"></span>
               <span class="glyphicon glyphicon-facetime-video"></span>
+              <span>Load up to 7 images/videos</span>
             </div>
           </div>
         </div>
       </div>
-      <p class="alert error" ng-show="project_files.length>7">Could only upload maximum 7 images/videos.</p>
+      <alert type="danger" ng-show="project_files.length>7">Could only upload maximum 7 files.
+        Remove some files before posting your project.</alert>
     </div>
     </div>
     <br>
     <div class="form-group">
       <input type="submit" value="Post" class="btn btn-primary"/>
     </div>
+    <pre>{{project |json}}</pre>
   </form>
 </div>

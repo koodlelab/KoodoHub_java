@@ -5,11 +5,13 @@ import com.koodohub.domain.User;
 import com.koodohub.jdbc.ProjectDAO;
 import com.koodohub.jdbc.RelationshipDAO;
 import com.koodohub.jdbc.UserDAO;
+import com.koodohub.resource.ProjectResource;
 import com.koodohub.resource.SessionResource;
 import com.koodohub.resource.UserResource;
 import com.koodohub.security.KoodoHubAuthProvider;
 import com.koodohub.security.KoodoHubAuthenticator;
 import com.koodohub.service.MailService;
+import com.koodohub.service.ProjectService;
 import com.koodohub.service.UserService;
 import io.dropwizard.Application;
 import io.dropwizard.assets.AssetsBundle;
@@ -28,7 +30,7 @@ public class KoodoHubApplication extends Application<KoodoHubConfiguration> {
     protected ApplicationContext applicationContext;
 
     private final HibernateBundle<KoodoHubConfiguration> hibernateBundle =
-            new HibernateBundle<KoodoHubConfiguration>(User.class) {
+            new HibernateBundle<KoodoHubConfiguration>(User.class, Project.class) {
                 @Override
                 public DataSourceFactory getDataSourceFactory(KoodoHubConfiguration configuration) {
                     return configuration.getDataSourceFactory();
@@ -42,9 +44,6 @@ public class KoodoHubApplication extends Application<KoodoHubConfiguration> {
     @Override
     public void initialize(Bootstrap<KoodoHubConfiguration> bootstrap) {
         bootstrap.addBundle(new AssetsBundle("/web", "/", "index.html", "root"));
-        bootstrap.addBundle(new AssetsBundle("/web/vendor", "/vendor", null, "vendor"));
-        bootstrap.addBundle(new AssetsBundle("/web/davatars-tmp", "/davatars-tmp", null, "davatars"));
-//        bootstrap.addBundle(new AssetsBundle("/avatars", "/avatars", null, "avatars"));
         bootstrap.addBundle(new MigrationsBundle<KoodoHubConfiguration>() {
             @Override
             public DataSourceFactory getDataSourceFactory(KoodoHubConfiguration configuration) {
@@ -67,9 +66,11 @@ public class KoodoHubApplication extends Application<KoodoHubConfiguration> {
         // save business services
         UserService userService = new UserService(userDAO, relationshipDAO);
         MailService mailService = new MailService(configuration);
+        ProjectService projectService = new ProjectService(projectDAO);
         // register dropwizard resource
         environment.jersey().register(new UserResource(userService, mailService));
         environment.jersey().register(new SessionResource(userService, authenticator));
+        environment.jersey().register(new ProjectResource(projectService));
         environment.jersey().register(new KoodoHubAuthProvider(authenticator));
     }
 }

@@ -62,7 +62,7 @@
       <column name="title" type="varchar(255)">
         <constraints nullable="false"/>
       </column>
-      <column name="medialink" type="varchar(255)">
+      <column name="medialink" type="varchar(500)">
         <constraints nullable="false"/>
       </column>
       <column name="owner" type="varchar(30)">
@@ -71,8 +71,11 @@
       <column name="description" type="varchar(255)">
         <constraints nullable="true"/>
       </column>
-      <column name="how" type="varchar(1000)">
-        <constraints nullable="true"/>
+      <column name="createdon" type="TIMESTAMP WITH TIME ZONE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="updatedon" type="TIMESTAMP WITH TIME ZONE">
+        <constraints nullable="false"/>
       </column>
     </createTable>
   </changeSet>
@@ -87,6 +90,12 @@
       </column>
       <column name="followed" type="varchar(30)">
         <constraints foreignKeyName="username" references="users" nullable="false" />
+      </column>
+      <column name="createdon" type="TIMESTAMP WITH TIME ZONE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="updatedon" type="TIMESTAMP WITH TIME ZONE">
+        <constraints nullable="false"/>
       </column>
     </createTable>
   </changeSet>

@@ -1,5 +1,8 @@
 package com.koodohub.domain;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import com.koodohub.security.JsonViews;
+
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 import javax.ws.rs.FormParam;
@@ -7,7 +10,11 @@ import javax.ws.rs.FormParam;
 @NamedQueries({
         @NamedQuery(
                 name = "Project.findByUsername",
-                query = "from Project p where p.username = :username"
+                query = "from Project p where p.owner = :username"
+        ),
+        @NamedQuery(
+                name = "Project.findById",
+                query = "from Project p where p.id = :id"
         )
 })
 @Entity
@@ -20,29 +27,49 @@ public class Project {
     @FormParam("title")
     @Size(min=1, max=255)
     @Column(name = "title", nullable = false)
+    @JsonView(JsonViews.Project.class)
     private String title;
 
     @Column(name = "owner", nullable = false)
     private String owner;
 
-    @Size(min = 6, max = 100)
-    @Column(name = "medialink", nullable = true)
-    private String mediaLink;
+    @Size(min=1, max = 500)
+    @Column(name = "medialink", nullable = false)
+    @FormParam("medialink")
+    @JsonView(JsonViews.Project.class)
+    private String medialink;
 
     @Size(max = 255)
     @Column(name = "description", nullable = true)
+    @FormParam("description")
+    @JsonView(JsonViews.Project.class)
     private String description;
 
-    @Size(max = 1000)
-    @Column(name = "how", nullable = true)
-    private String how;
+    @Embedded
+    private final AuditUpdate auditUpdate;
+
+    public Project() {
+        this.auditUpdate = new AuditUpdate();
+    }
+
+    public void init(String title, String description, String owner, String medialink) {
+        auditUpdate.init();
+        this.title = title;
+        this.description = description;
+        this.owner = owner;
+        this.medialink = medialink;
+    }
 
     public String getTitle() {
         return title;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public String getMedialink() {
+        return medialink;
+    }
+
+    public void setMedialink(String medialink) {
+        this.medialink = medialink;
     }
 
     public String getOwner() {
@@ -53,14 +80,6 @@ public class Project {
         this.owner = owner;
     }
 
-    public String getMediaLink() {
-        return mediaLink;
-    }
-
-    public void setMediaLink(String mediaLink) {
-        this.mediaLink = mediaLink;
-    }
-
     public String getDescription() {
         return description;
     }
@@ -69,11 +88,4 @@ public class Project {
         this.description = description;
     }
 
-    public String getHow() {
-        return how;
-    }
-
-    public void setHow(String how) {
-        this.how = how;
-    }
 }

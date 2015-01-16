@@ -27,7 +27,7 @@ services.factory('SettingsService', function ($resource) {
   })
 });
 
-services.factory('ProjectService', function ($resource) {
+services.factory('ProjectService', function($resource) {
   return $resource('resource/projects/:id');
 });
 

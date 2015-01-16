@@ -48,6 +48,7 @@ koodohub_app.controller('SettingsController', function($scope, $window, $timeout
 
   $scope.upload = function(file) {
     console.log("upload file");
+    var fileLinks = '';
     $scope.generateThumb(file);
     $upload.upload ({
       url: 'resource/members/uploadAvatar',
@@ -57,26 +58,10 @@ koodohub_app.controller('SettingsController', function($scope, $window, $timeout
       $scope.uploadPercentage = parseInt(100.0 * evt.loaded / evt.total);
       console.log('progress: ' + $scope.uploadPercentage + '% file :'+ evt.config.file.name);
     }).success(function(data, status, headers, config) {
+      console.log('link'+data);
       $window.location.reload();
     });
   };
-
-  $scope.generateThumb = function(file) {
-    if (file != null) {
-      if ($scope.fileReaderSupported && file.type.indexOf('image') > -1) {
-        $timeout(function() {
-          var fileReader = new FileReader();
-          fileReader.readAsDataURL(file);
-          fileReader.onload = function(e) {
-            $timeout(function() {
-              console.log("data url set.");
-              file.dataUrl = e.target.result;
-            });
-          }
-        });
-      }
-    }
-  }
   $scope.updateEmail = function() {
     SettingsService.updateEmail({email:$scope.user.email});
   }
@@ -85,17 +70,39 @@ koodohub_app.controller('SettingsController', function($scope, $window, $timeout
   }
 });
 
-koodohub_app.controller('postNewProjectController', function($scope, $timeout,
-                                                             ProjectService) {
+koodohub_app.controller('postNewProjectController', function($scope, $rootScope, $timeout,
+                                                             $q, ProjectService, $upload) {
   $scope.fileReaderSupported = window.FileReader != null && (window.FileAPI == null || FileAPI.html5 != false);
   $scope.project = new ProjectService();
   $scope.previewTemplate='';
   $scope.project_files = [];
-  $scope.save = function() {
-    $scope.project.$save(function() {
-//      $scope.closePostNewProject();
-      console.log("project saved.");
-    })
+  $scope.project.medialink = '';
+  $scope.postNewProject = function() {
+    var uploadFiles = function () {
+      var promises = [];
+      for (var i = 0; i < $scope.project_files.length; i++) {
+        var response = $upload.upload({
+          url: 'resource/projects/uploadFile',
+          file: $scope.project_files[i]
+        }).progress(function (evt) {
+          console.log('progress: ' + $scope.uploadPercentage + '% file :' + evt.config.file.name);
+        }).success(function (ddata, status, headers, config) {
+          console.log(config.file.name + ' uploaded.' + ddata.data);
+          $scope.project.medialink += (ddata.data + ';');
+        })
+        promises.push(response);
+      }
+      return $q.all(promises);
+    }
+    uploadFiles().then(function() {
+      $scope.project.title = $scope.title;
+      $scope.project.description = $scope.description;
+      console.log("media link:"+$scope.project.medialink);
+      $scope.project.$save(function(response) {
+        $location.path('/projects/'+response.data);
+        console.log("project saved.");
+      });
+    });
   }
 
   $scope.addFiles = function(files) {

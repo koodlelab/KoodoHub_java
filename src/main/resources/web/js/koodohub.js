@@ -30,6 +30,11 @@ koodohub_app.config(function($stateProvider, $urlRouterProvider, $httpProvider, 
       templateUrl: 'partials/members.html',
       controller: 'MembersController'
     })
+    .state('project', {
+      url: '/project/:id',
+      templateUrl: 'partials/project.html',
+      controller: "ProjectController"
+    })
     .state('member', {
       url: '/member/:username',
       templateUrl: 'partials/member.html',

@@ -1,8 +1,6 @@
 package com.koodohub.domain;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Multimap;
 import com.koodohub.security.JsonViews;
 import com.koodohub.util.RandomUtil;
 import org.hibernate.validator.constraints.Email;
@@ -11,7 +9,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 import javax.ws.rs.FormParam;
-import java.sql.Date;
 
 @NamedQueries({
     @NamedQuery(
@@ -67,12 +64,6 @@ public class User {
     @Column(name = "role", nullable = false)
     private String role;
 
-    @Column(name = "createdon", nullable = false)
-    private Date createdOn;
-
-    @Column(name = "updatedon", nullable = false)
-    private Date updatedOn;
-
     @Column(name = "activated", nullable = false)
     private boolean activated;
 
@@ -83,12 +74,16 @@ public class User {
     @Column(name = "avatarlink", length = 255)
     private String avatarLink;
 
-    public User() {
+    @Embedded
+    private final AuditUpdate auditUpdate;
 
+    public User() {
+        this.auditUpdate = new AuditUpdate();
     }
 
     public void init(final String fullName, final String email, final String password,
                 final String userName, final String role) {
+        this.auditUpdate.init();
         this.fullname = fullName;
         this.email = email;
         this.username = userName;
@@ -96,7 +91,6 @@ public class User {
         this.role = role;
         this.activated = false;
         this.activationKey = RandomUtil.generateActivationKey();
-        this.createdOn = this.updatedOn = new Date(System.currentTimeMillis());
         this.avatarLink = "davatars/avatar_"+RandomUtil.randInt(1, 7)+".jpg";
     }
 
@@ -156,13 +150,6 @@ public class User {
         return role;
     }
 
-    public Date getCreatedOn() {
-        return createdOn;
-    }
-
-    public Date getUpdatedOn() {
-        return updatedOn;
-    }
 
     public String getAvatarLink() {
         return avatarLink;

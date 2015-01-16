@@ -66,12 +66,18 @@ public class UserResource {
             return new ErrorResponse(Response.Status.CONFLICT,
                     userEntry.getUserName()+" has been used.").build();
         }
-        User user = userService.createUser(userEntry.getUserName(), userEntry.getPassword(),
-                userEntry.getFullName(), userEntry.getEmail());
-        logger.info("member {} created.", user.getFullName());
-        mailService.sendActivationEmail(getBaseUriRoutingString(), user.getEmail(), user.getUserName(), user.getActivationKey());
-        return new SuccessResponse(Response.Status.CREATED,
-                "Please check "+user.getEmail()+" to activate your account.").build();
+        try {
+            User user = userService.createUser(userEntry.getUserName(), userEntry.getPassword(),
+                    userEntry.getFullName(), userEntry.getEmail());
+            logger.info("member {} created.", user.getFullName());
+            mailService.sendActivationEmail(getBaseUriRoutingString(), user.getEmail(), user.getUserName(), user.getActivationKey());
+            return new SuccessResponse(Response.Status.CREATED,
+                    "Please check " + user.getEmail() + " to activate your account.", null).build();
+        } catch (Exception e) {
+            logger.error("member {} creation failed.", e);
+            return new ErrorResponse(Response.Status.INTERNAL_SERVER_ERROR,
+                    "Error creating account.", null).build();
+        }
     }
 
     @GET
@@ -91,7 +97,7 @@ public class UserResource {
         logger.debug("activate account for {}", email);
         return Optional.fromNullable(userService.activateUser(email, token))
                     .transform(user -> new SuccessResponse(Response.Status.ACCEPTED,
-                            user.get().getFullName()+", your account is activated.  Please sign in.").build())
+                            user.get().getFullName()+", your account is activated.  Please sign in.", null).build())
                     .or(new ErrorResponse(Response.Status.BAD_REQUEST,
                             "Invalid activation.").build());
     }
@@ -121,7 +127,7 @@ public class UserResource {
             Files.copy(uploadStream, outputPath, StandardCopyOption.REPLACE_EXISTING);
             user.setAvatarLink("avatars/"+fileDetail.getFileName());
             return new SuccessResponse(Response.Status.OK,
-                    "Picture is uploaded.").build();
+                    "Picture is uploaded.", null).build();
         } catch (IOException e) {
             logger.error("Failed to save file {} for user {}",
                     fileDetail.getFileName(),
@@ -142,7 +148,7 @@ public class UserResource {
         logger.info("update user {}", user.getUserName());
         user.setEmail(email);
         return new SuccessResponse(Response.Status.OK,
-                "Email is updated.").build();
+                "Email is updated.", null).build();
     }
 
     @GET
@@ -157,7 +163,7 @@ public class UserResource {
         //TODO validation of old password if password is changed.
         user.updatePassword(newPassword);
         return new SuccessResponse(Response.Status.OK,
-                "Password is updated.").build();
+                "Password is updated.", null).build();
     }
 
     @GET
