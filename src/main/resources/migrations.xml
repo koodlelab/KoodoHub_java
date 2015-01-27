@@ -11,7 +11,7 @@
       <column name="fullname" type="varchar(30)">
         <constraints nullable="false"/>
       </column>
-      <column name="username" type="varchar(10)">
+      <column name="username" type="varchar(30)">
         <constraints primaryKey="true" nullable="false"/>
       </column>
       <column name="password" type="varchar(100)">
@@ -21,6 +21,18 @@
         <constraints nullable="false"/>
       </column>
       <column name="role" type="varchar(7)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="activationkey" type="varchar(255)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="activated" type="boolean">
+        <constraints nullable="false"/>
+      </column>
+      <column name="avatarlink" type="varchar(255)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="coverlink" type="varchar(255)">
         <constraints nullable="false"/>
       </column>
       <column name="createdon" type="TIMESTAMP WITH TIME ZONE">
@@ -33,28 +45,6 @@
   </changeSet>
 
   <changeSet id="2" author="koodlelab">
-    <modifyDataType tableName="users" columnName="username" newDataType="varchar(30)"/>
-  </changeSet>
-
-  <changeSet id="3" author="koodlelab">
-    <addColumn tableName="users">
-      <column name="activationkey" type="varchar(255)"/>
-    </addColumn>
-    <addColumn tableName="users">
-      <column name="activated" type="boolean" defaultValueBoolean="true">
-      </column>
-    </addColumn>
-  </changeSet>
-
-  <changeSet id="4" author="koodlelab">
-    <addColumn tableName="users">
-      <column name="avatarlink" type="varchar(255)" defaultValue="/davatars/avatar_1.jpg">
-        <constraints nullable="false"/>
-      </column>
-    </addColumn>
-  </changeSet>
-
-  <changeSet id="5" author="koodlelab">
     <createTable tableName="projects">
       <column name="id" type="int" autoIncrement="true">
         <constraints primaryKey="true" nullable="false"/>
@@ -65,7 +55,7 @@
       <column name="medialink" type="varchar(500)">
         <constraints nullable="false"/>
       </column>
-      <column name="owner" type="varchar(30)">
+      <column name="username" type="varchar(30)">
         <constraints foreignKeyName="username" references="users" nullable="false" />
       </column>
       <column name="description" type="varchar(255)">
@@ -80,12 +70,12 @@
     </createTable>
   </changeSet>
 
-  <changeSet id="6" author="koodlelab">
-    <createTable tableName="relationships">
+  <changeSet id="3" author="koodlelab">
+    <createTable tableName="projects">
       <column name="id" type="int" autoIncrement="true">
         <constraints primaryKey="true" nullable="false"/>
       </column>
-      <column name="follower" type="varchar(30)">
+      <column name="following" type="varchar(30)">
         <constraints foreignKeyName="username" references="users" nullable="false" />
       </column>
       <column name="followed" type="varchar(30)">

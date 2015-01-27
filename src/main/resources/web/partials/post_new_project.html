@@ -1,26 +1,17 @@
-
 <alert type="danger" ng-show="errors">
   <div ng-repeat="error in errors">{{error}}</div>
 </alert>
-<br>
-<div ng-controller="postNewProjectController">
+<div ng-include="'partials/member_home_header.html'"></div>
+<div class="container-fluid">
+<div class="row-fluid">
+<div class="col-md-10 col-lg-offset-1">
+
+<div ng-controller="NewProjectController">
   <form ng-submit="postNewProject()">
-    <div class="newProject">
     <div class="form-group">
+      <label>Title:</label>
       <input type="text" ng-model="title" ng-required="true"
              placeholder="Give a title in a few exciting words" class="form-control"/>
-    </div>
-    <div class="form-group">
-      <textarea id="micropost_content"
-                class="form-control"
-                maxlength="255"
-                ng-trim="false"
-                placeholder="Introduce project in less than 255 characters"
-                ng-model="description"
-                ng-required="true" rows="5"
-                ng-keyup="remaining=(255-description.length)"
-                ng-init="remaining=255"></textarea>
-      <alert type="warning" ng-show="remaining<20">Approaching 255 characters limit. {{remaining}}</alert>
     </div>
     <div class="form_group">
       <div class="upload-drop-zone">
@@ -35,7 +26,7 @@
                  ng-multiple="true" allow-dir="true" accept="image/*,video/*" ng-file-change="addFiles(new_files)">
               <span class="glyphicon glyphicon-camera"></span>
               <span class="glyphicon glyphicon-facetime-video"></span>
-              <span>Load up to 7 images/videos</span>
+              <span>Load up to 7 images/videos here</span>
             </div>
           </div>
         </div>
@@ -43,11 +34,24 @@
       <alert type="danger" ng-show="project_files.length>7">Could only upload maximum 7 files.
         Remove some files before posting your project.</alert>
     </div>
-    </div>
     <br>
+    <div class="form-group">
+      <textarea id="micropost_content"
+                class="form-control"
+                maxlength="255"
+                ng-trim="false"
+                placeholder="If you like to, introduce project in less than 255 characters here."
+                ng-model="description"
+                ng-required="true" rows="5"
+                ng-keyup="remaining=(255-description.length)"
+                ng-init="remaining=255"></textarea>
+      <alert type="warning" ng-show="remaining<50">Approaching 255 characters limit. {{remaining}}</alert>
+    </div>
     <div class="form-group">
       <input type="submit" value="Post" class="btn btn-primary"/>
     </div>
-    <pre>{{project |json}}</pre>
   </form>
+</div>
+</div>
+</div>
 </div>

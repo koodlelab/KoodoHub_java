@@ -23,6 +23,8 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.security.SecureRandom;
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Path("/projects")
@@ -41,16 +43,16 @@ public class ProjectResource {
     @POST
     @UnitOfWork
     public Response create(@Auth User user, @Valid Project projectEntry) {
-        log.info("{} create project {} {} {}", user.getUserName(), projectEntry.getTitle(),
+        log.info("{} create project {} {} {}", user.getUsername(), projectEntry.getTitle(),
                 projectEntry.getMedialink(), projectEntry.getDescription());
         Project project = projectService.createProject(projectEntry.getTitle(),
-                projectEntry.getDescription(), user.getUserName(), projectEntry.getMedialink());
+                projectEntry.getDescription(), user, projectEntry.getMedialink());
         return new SuccessResponse<Project>(Response.Status.CREATED,
                 "Project "+projectEntry.getTitle()+" is posted.", project).build();
     }
 
     @GET
-    @Path("/{username}")
+    @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @UnitOfWork
     public Project show(@Auth User user, @PathParam("id") int id) {
@@ -62,11 +64,21 @@ public class ProjectResource {
         return projectInfo.get();
     }
 
+    @GET
+    @Path("/getUserProjects")
+    @UnitOfWork
+    public Set<Project> getUserProjects(@Auth User user, @QueryParam("username") String username) {
+//        List<Project> projects =  projectService.getProjectsByUsername(username);
+        Set<Project> projects = user.getProjects();
+        log.debug("querying projects by username:{} size:{}", username, projects.size());
+        return projects;
+    }
+
     @POST
     @Path("/uploadFile")
     @UnitOfWork
     @Consumes(MediaType.MULTIPART_FORM_DATA)
-    public Response uploadAvatar(@Auth User user,
+    public Response uploadFile(@Auth User user,
                                  @FormDataParam("file") final InputStream uploadStream,
                                  @FormDataParam("file") FormDataContentDisposition fileDetail) {
         String newFileName = "P"+secureRandom.nextInt()+"_"+fileDetail.getFileName();
@@ -79,7 +91,7 @@ public class ProjectResource {
         } catch (IOException e) {
             log.error("Failed to save file {} for user {}",
                     fileDetail.getFileName(),
-                    user.getUserName(),
+                    user.getUsername(),
                     e);
             return new ErrorResponse(Response.Status.INTERNAL_SERVER_ERROR,
                     "Unable to upload file "+fileDetail.getFileName()).build();

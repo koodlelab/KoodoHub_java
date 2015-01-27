@@ -15,7 +15,7 @@ public class TokenUtils {
 
     public static String createToken(User userDetails) {
         StringBuilder tokenBuilder = new StringBuilder();
-        tokenBuilder.append(userDetails.getUserName());
+        tokenBuilder.append(userDetails.getUsername());
         tokenBuilder.append(":");
         tokenBuilder.append(computeSignature(userDetails));
 
@@ -26,7 +26,7 @@ public class TokenUtils {
     public static String computeSignature(User userDetails) {
 
         StringBuilder signatureBuilder = new StringBuilder();
-        signatureBuilder.append(userDetails.getUserName());
+        signatureBuilder.append(userDetails.getUsername());
         signatureBuilder.append(":");
         signatureBuilder.append(userDetails.getPassword());
         signatureBuilder.append(":");

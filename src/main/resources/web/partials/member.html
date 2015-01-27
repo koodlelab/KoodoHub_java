@@ -1,28 +1,14 @@
-<div class="row">
-  <aside class="col-md-3">
-    <section>
-      <img src="{{member.avatarLink}}" height="100" width="100" class="img-rounded"/>
-      <h1>{{member.fullname}}</h1>
-      <span>
-        <ng-pluralize count="user.projects.count"
-                      when="{'0': 'No projects.', '1': '1 project.', 'other': '{} projects.'}">
-        </ng-pluralize>
-      </span>
-    </section>
-    <section>
-      <text></text>
-      <div ui-view="member_stats"></div>
-    </section>
-  </aside>
-  <div class="col-md-9">
-    <div role="tabpanel">
-      <!-- Nav tabs -->
-      <ul class="nav nav-tabs" role="tablist">
-        <li role="presentation"><a href="#portfolio" aria-controls="portfolio" role="tab" data-toggle="tab">Portfolio</a></li>
-      </ul>
-      <!-- Tab panes -->
-      <div class="tab-content">
-        <div role="tabpanel" class="tab-pane" id="portfolio">Portfolio</div>
+<div ng-include="'partials/member_home_header.html'">
+</div>
+
+<div class="container-fluid">
+  <div class="row-fluid">
+    <div ng-init="memberProjects()">
+      <div ng-repeat="project in displayProjects" >
+        <div class="col-md-4">
+
+          <img ng-src="{{project.projectImage}}" width="280">
+        </div>
       </div>
     </div>
   </div>

@@ -7,6 +7,8 @@ koodohub_app.config(function($stateProvider, $urlRouterProvider, $httpProvider, 
 
   $urlRouterProvider.otherwise('/');
 
+  window.PUBLIC_STATES = ['home', 'activate'];
+
   $stateProvider
     .state('home', {
       url: '/',
@@ -21,9 +23,10 @@ koodohub_app.config(function($stateProvider, $urlRouterProvider, $httpProvider, 
       templateUrl: 'partials/member_settings.html',
       controller: 'SettingsController'
     })
-    .state('newproject', {
-      url: '/newProject',
-      templateUrl: 'partials/post_new_project.html'
+    .state('postNewProject', {
+      url: '/postNewProject',
+      templateUrl: 'partials/post_new_project.html',
+      controller: 'NewProjectController'
     })
     .state('members',{
       url: '/members',
@@ -89,7 +92,50 @@ koodohub_app.config(function($stateProvider, $urlRouterProvider, $httpProvider, 
 koodohub_app.run(function($rootScope, $http, $location, $cookieStore, $window,
                           MemberService, $state, AUTH_TOKEN) {
 
+
+
   $rootScope.authenticated = false;
+  /* Try getting valid user from cookie or go to login page */
+  var originalPath = $location.path();
+  var authToken = $window.sessionStorage.token;
+  if (authToken === "undefined" || authToken === undefined) {
+    authToken = $.cookie(AUTH_TOKEN);
+  } else {
+    console.log("authToken:"+authToken);
+    $rootScope.authenticated = true;
+  }
+  if (typeof(authToken) !== "undefined") {
+    $window.sessionStorage.token = authToken;
+    MemberService.get({username: authToken.split(':')[0]}, function (user) {
+      $rootScope.user = user;
+      $rootScope.authenticated = true;
+      $location.path(originalPath);
+    }, function (response) {
+      console.log("whatever");
+      //clear cookies if unauthorized
+      if (response.status === 401) {
+        $rootScope.authenticated = false;
+        delete $window.sessionStorage.token;
+        $.removeCookie(AUTH_TOKEN);
+        $location.path('/');
+      }
+    });
+  }
+//  } else {
+//
+//    $location.path('/');
+//  }
+  $rootScope.initialized = true;
+
+////  console.log("runnnnning..");
+  $rootScope.$on('$stateChangeStart', function (e, toState) {
+    console.debug(toState.name+" "+$rootScope.authenticated);
+    if (!$rootScope.authenticated && window.PUBLIC_STATES.indexOf(toState.name) < 0) {
+      console.debug($rootScope.authenticated);
+      e.preventDefault();
+      $state.go('home');
+    }
+  });
 
   /* Reset error when a new view is loaded */
   $rootScope.$on('$viewContentLoaded', function() {
@@ -100,25 +146,12 @@ koodohub_app.run(function($rootScope, $http, $location, $cookieStore, $window,
     delete $rootScope.user;
     delete $window.sessionStorage.token;
     $.removeCookie(AUTH_TOKEN);
+    $location.path('/');
     $window.location.reload();
 
   };
 
-  /* Try getting valid user from cookie or go to login page */
-  var originalPath = $location.path();
-  var authToken = $window.sessionStorage.token;
-  if (authToken === undefined) {
-    authToken = $.cookie(AUTH_TOKEN);
-    $window.sessionStorage.token = authToken;
-  }
-  if (authToken !== undefined) {
-    MemberService.get({username: authToken.split(':')[0]}, function(user) {
-      $rootScope.user = user;
-      $rootScope.authenticated = true;
-      $location.path(originalPath);
-    });
-  }
-  $rootScope.initialized = true;
+
 
 });
 

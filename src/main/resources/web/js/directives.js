@@ -1,74 +1,108 @@
 'use strict';
 
-koodohub_app.directive('dynamicPreview', function ($compile) {
+koodohub_app.directive('hoverProjectImage', function() {
+  return {
+    restrict: 'E',
+    link: function(scope, element, attrs) {
+      element.on('mouseenter', function(event) {
+        element.find('.project-text').css("height", "200px");
+      });
+      element.on('mouseleave', function(event) {
+        element.find('.project-text').css("height", "70px");
+      });
+    }
+  }
+});
+
+koodohub_app.directive('projectMediaFiles', ['$compile', 'ImageViewService',
+  function ($compile, ImageViewService) {
+    return {
+      restrict: 'E',
+      replace: true,
+      scope: {
+        lsrc: '@'
+      },
+      link: function (scope, element, attrs) {
+        attrs.$observe('lsrc', function(value) {
+          if (value !== "") {
+            console.log(value);
+            var mediaLinks = value.split(';');
+            console.log(mediaLinks.length);
+            var html="";
+            for (var i = 0; i<mediaLinks.length; i++) {
+              if (mediaLinks[i] !== "") {
+                var fileType = ImageViewService.parseFileTypeByName(mediaLinks[i]);
+                var templateTemp = ImageViewService.defaultViewTemplates[fileType];
+
+                var file_html = "\n" + templateTemp.replace(/\{type\}/g, fileType
+                  + "/" + mediaLinks[i].split('.').pop())
+                  .replace(/\{data\}/g, mediaLinks[i])
+                  .replace(/\{width\}/g, "100%")
+                  .replace(/\{controls\}/g, "controls");
+                html += file_html;
+              }
+            }
+            element.html(html);
+            $compile(element.contents())(scope);
+          }
+        });
+      }
+    }
+  }]);
+
+koodohub_app.directive('projectImage', ['$compile', 'ImageViewService',
+  function ($compile, ImageViewService) {
+  return {
+    restrict: 'E',
+    replace: true,
+    scope: {
+      src: '@'
+    },
+    link: function (scope, element, attrs) {
+      var fileType = ImageViewService.parseFileTypeByName(scope.src);
+      var templateTemp = ImageViewService.defaultViewTemplates[fileType];
+      var html = "\n" + templateTemp.replace(/\{type\}/g, fileType+"/"+scope.src.split('.').pop())
+        .replace(/\{data\}/g, scope.src).replace(/\{width\}/g, "280px").replace(/\{controls\}/g, "");
+      element.html(html);
+      $compile(element.contents())(scope);
+    }
+  }
+}]);
+
+koodohub_app.directive('dynamicPreview', ['$compile', 'ImageViewService',
+  function ($compile, ImageViewService) {
   return {
     restrict: 'E',
     replace: true,
     link: function (scope, ele, attrs) {
-      var defaultPreviewTypes = ['image', 'video'];
-      var defaultFileTypeSettings = {
-        image: function(vType, vName) {
-          return (typeof vType !== "undefined") ? vType.match('image.*') : vName.match(/\.(gif|png|jpe?g)$/i);
-        },
-        video: function (vType, vName) {
-          return typeof vType !== "undefined" && vType.match(/\.video\/(ogg|mp4|webm)$/i)
-            || vName.match(/\.(og?|mp4|webm)$/i);
-        }
-      };
-      var defaultPreviewTemplates = {
-        image: '<div class="file-preview-frame">\n' +
-          '   <img src="{data}" width="180" height="140">\n' +
-          '   {footer}\n' +
-          '</div>\n',
-        video: '<div class="file-preview-frame">\n' +
-          '   <video width="180" height="135" controls>\n' +
-          '       <source src="{data}" type="{type}"> </video>\n' +
-          '   {footer}\n' +
-          '</div>\n',
-        addLink: '<div class="add-project-file-frame">\n' +
-          '   <div class="file-button" ng-file-select ng-model="new_files" ng-required="true"\n'+
-          '    ng-multiple="true" allow-dir="true" accept="image/*,video/*" ng-file-change="addFiles(new_files)">\n'+
-          '    <span class="glyphicon glyphicon-camera"></span>\n'+
-          '    <span class="glyphicon glyphicon-facetime-video"></span>\n'+
-          '    </div></div>\n'
-      };
-      var parseFileType = function(file) {
-        var isValid, vType;
-        for (var i = 0; i < defaultPreviewTypes.length; i++) {
-          var cat = defaultPreviewTypes[i];
-          vType = defaultFileTypeSettings[cat](file.type, file.name) ? cat : '';
-          if (vType != '') {
-            return vType;
-          }
-        }
-        return 'other';
-      };
       scope.$watch('project_files', function(html) {
         var previewTemplate = '';
         for (var i = 0; i < scope.project_files.length; i++) {
           (function(file, parseFileType, defaultPreviewTemplates) {
             var vUrl = window.URL || window.webkitURL;
             var data = vUrl.createObjectURL(file)
-            var fileType = parseFileType(file);
-            var templateTemp = defaultPreviewTemplates[fileType];
+            var fileType = ImageViewService.parseFileType(file);
+            var templateTemp = ImageViewService.defaultPreviewTemplates[fileType];
             var footer = "<div class=\"file-thumbnail-footer\">\n" +
               "<div class=\"file-caption-name\" style=\"width: 150px;\">"+file.name+"</div>\n" +
               "<div class=\"file-actions\">\n"+
               "<div class=\"file-footer-buttons\">\n"+
-              "   <button class=\"btn btn-xs btn-default\" title=\"Remove file\" ng-click=\"removeFile(\'"
-              +file.name+"\')\">" + "<i class=\"glyphicon glyphicon-trash text-danger\"></i></button>\n" +
+              "   <button class=\"btn btn-xs btn-default\" title=\"Remove file\" " +
+              "ng-click=\"removeFile(\'" +
+              file.name+"\')\">" +
+              "<i class=\"glyphicon glyphicon-trash text-danger\"></i></button>\n" +
               "   </div></div></div>";
             var html = "\n" + templateTemp.replace(/\{type\}/g, file.type)
               .replace(/\{data\}/g, data).replace(/\{footer\}/g, footer);
             previewTemplate += html;
-          })(scope.project_files[i], parseFileType, defaultPreviewTemplates);
+          })(scope.project_files[i]);
         }
         if (scope.project_files.length > 0) {
-          previewTemplate += defaultPreviewTemplates['addLink'];
+          previewTemplate += ImageViewService.defaultPreviewTemplates['addLink'];
         }
         ele.html(previewTemplate);
         $compile(ele.contents())(scope);
       }, true);
     }
   };
-});
+}]);

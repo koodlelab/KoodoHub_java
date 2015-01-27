@@ -20,25 +20,36 @@ public class Relationship {
     @Column(name = "id")
     private int id;
 
-    @Column(name = "follower", nullable = false)
-    private String follower;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="following")
+    private User following;
 
-    @Column(name = "followed", nullable = false)
-    private String followed;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "followed")
+    private User followed;
 
-    public String getFollower() {
-        return follower;
+    @Embedded
+    private final AuditUpdate auditUpdate = new AuditUpdate();
+
+    public void init(User follower, User followed) {
+        auditUpdate.init();
+        this.following = follower;
+        this.followed = followed;
     }
 
-    public void setFollower(String follower) {
-        this.follower = follower;
+    public User getFollowing() {
+        return following;
     }
 
-    public String getFollowed() {
+    public void setFollowing(User follower) {
+        this.following = follower;
+    }
+
+    public User getFollowed() {
         return followed;
     }
 
-    public void setFollowed(String followed) {
+    public void setFollowed(User followed) {
         this.followed = followed;
     }
 }

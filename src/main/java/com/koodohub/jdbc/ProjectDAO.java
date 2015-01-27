@@ -17,10 +17,10 @@ public class ProjectDAO extends AbstractDAO<Project> {
         return persist(project);
     }
 
-    public List<Project> findByUsername(String username) {
-        return list(namedQuery("Project.findByUsername")
-                .setString("username", username));
-    }
+//    public List<Project> findByUsername(String username) {
+//        return list(namedQuery("Project.findByUsername")
+//                .setString("username", username));
+//    }
 
     public Optional<Project> findById(int id) {
         return Optional.fromNullable(uniqueResult(namedQuery("Project.findById")

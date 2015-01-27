@@ -2,7 +2,10 @@ package com.koodohub.service;
 
 import com.google.common.base.Optional;
 import com.koodohub.domain.Project;
+import com.koodohub.domain.User;
 import com.koodohub.jdbc.ProjectDAO;
+
+import java.util.List;
 
 public class ProjectService {
 
@@ -13,7 +16,7 @@ public class ProjectService {
     }
 
     public Project createProject(final String title, final String description,
-                                 final String owner, final String mediaLink) {
+                                 final User owner, final String mediaLink) {
         Project project = new Project();
         project.init(title, description, owner, mediaLink);
         projectDAO.save(project);
@@ -23,4 +26,8 @@ public class ProjectService {
     public Optional<Project> getProjectById(final int id) {
         return projectDAO.findById(id);
     }
+
+//    public List<Project> getProjectsByUsername(final String username) {
+//        return projectDAO.findByUsername(username);
+//    }
 }

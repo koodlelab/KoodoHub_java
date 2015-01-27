@@ -50,6 +50,6 @@ public class SessionResource {
 
     private UserToken getUserToken(String loginName, User user) {
         Optional<User> userDetails = userService.getUserByLogin(loginName);
-        return new UserToken(userDetails.get().getUserName(), TokenUtils.createToken(userDetails.get()));
+        return new UserToken(userDetails.get().getUsername(), TokenUtils.createToken(userDetails.get()));
     }
 }

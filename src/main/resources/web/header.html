@@ -23,17 +23,21 @@
       <ul class="nav navbar-nav navbar-right">
         <li ng-if="authenticated === false"><a href="#" ng-click="openSignUp()">Sign up</a></li>
         <li ng-if="authenticated === false"><a href="#" ng-click="openSignIn()">Sign in</a></li>
-        <li ng-if="authenticated === true" ng-class="{active: (authenticated === true)}">
-          <a href="#"><img src="{{user.avatarLink}}" height="20" width="20" class="img-rounded"/>
-            {{user.fullname}}</a>
-        </li>
-        <li ng-if="authenticated === true"><a href="#"><span class="glyphicon glyphicon-flash"></span></a></li>
+        <!--<li ng-if="authenticated === true" ng-class="{active: (authenticated === true)}">-->
+          <!--<a href="#"><img src="{{user.avatarLink}}" height="20" width="20" class="img-rounded"/>-->
+            <!--{{user.fullname}}</a>-->
+        <!--</li>-->
         <li class="dropdown" ng-if="authenticated === true">
+          <!--<a href="#"><img src="{{user.avatarLink}}" height="20" width="20" class="img-rounded"/>-->
+            <!--{{user.fullname}}</a>-->
           <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-            <span class="glyphicon glyphicon-cog"></span>
+            <img ng-src="{{user.avatarLink}}" height="30" width="30" class="img-rounded"/>
+            {{user.fullname}}
             <span class="caret"></span>
           </a>
           <ul class="dropdown-menu" role="menu">
+            <li><a href="#/postNewProject">Post new project</a></li>
+            <li><a href="#/portfolio">Portfolio</a></li>
             <li><a href="#/settings">Settings</a></li>
             <li class="divider"></li>
             <li><a ng-click="logout()">Logout</a></li>

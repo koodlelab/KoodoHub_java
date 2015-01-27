@@ -1,6 +1,8 @@
 package com.koodohub.domain;
 
 import com.codahale.metrics.MetricRegistryListener;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.koodohub.security.JsonViews;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -11,6 +13,7 @@ import java.sql.Date;
 public class AuditUpdate {
 
     @Column(name = "createdon", nullable = false)
+    @JsonView(JsonViews.Project.class)
     private Date createdOn;
 
     @Column(name = "updatedon", nullable = false)

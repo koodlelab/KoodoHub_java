@@ -1,5 +1,7 @@
 package com.koodohub.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.koodohub.security.JsonViews;
 import com.koodohub.util.RandomUtil;
@@ -9,6 +11,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 import javax.ws.rs.FormParam;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @NamedQueries({
     @NamedQuery(
@@ -74,6 +79,13 @@ public class User {
     @Column(name = "avatarlink", length = 255)
     private String avatarLink;
 
+    @Column(name = "coverlink", length = 255)
+    private String coverLink;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy="user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private Set<Project> projects = new HashSet<>();
+
     @Embedded
     private final AuditUpdate auditUpdate;
 
@@ -92,6 +104,7 @@ public class User {
         this.activated = false;
         this.activationKey = RandomUtil.generateActivationKey();
         this.avatarLink = "davatars/avatar_"+RandomUtil.randInt(1, 7)+".jpg";
+        this.coverLink = "dcovers/cover_"+RandomUtil.randInt(1, 7)+".jpg";
     }
 
     public boolean isCorrectPassword(final String password) {
@@ -117,8 +130,11 @@ public class User {
     public void setAvatarLink(String avatarLink) {
         this.avatarLink = avatarLink;
     }
+    public void setCoverLink(String coverLink) {
+        this.coverLink = coverLink;
+    }
 
-    public String getFullName() {
+    public String getFullname() {
         return fullname;
     }
 
@@ -126,7 +142,7 @@ public class User {
         return email;
     }
 
-    public String getUserName() {
+    public String getUsername() {
         return username;
     }
 
@@ -153,5 +169,11 @@ public class User {
 
     public String getAvatarLink() {
         return avatarLink;
+    }
+
+    public String getCoverLink() { return coverLink; }
+
+    public Set<Project> getProjects() {
+        return this.projects;
     }
 }

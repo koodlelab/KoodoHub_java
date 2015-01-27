@@ -1,6 +1,7 @@
 'use strict';
 
-koodohub_app.controller('HomeController', function($scope, $modal, $rootScope, $cookieStore){
+koodohub_app.controller('HomeController', function($scope, $modal, $rootScope,
+                                                   $cookieStore, UserProjectService){
 
   $rootScope.$on('switchToSignInEvent', function(event) {
     delete $rootScope.errors;
@@ -28,28 +29,50 @@ koodohub_app.controller('HomeController', function($scope, $modal, $rootScope, $
     });
   }
 
-  $scope.setTab = function (tabId) {
-    $cookieStore.put('tab', tabId);
-  };
+  $scope.changeCover = function() {
+    var modalInstance = $modal.open({
+      templateUrl: 'partials/change_cover.html',
+      controller: 'SettingsController',
+      windowClass: 'changeCover-dialog'
+    })
+  }
 
-  $scope.isSet = function (tabId) {
-    if ($cookieStore.get('tab') == null) {
-      $cookieStore.put('tab', 1);
-    }
-    return $cookieStore.get('tab')==tabId;
-  };
+  $scope.changeAvatar = function() {
+    var modalInstance = $modal.open({
+      templateUrl: 'partials/change_avatar.html',
+      controller: 'SettingsController',
+      windowClass: 'changeCover-dialog'
+    })
+  }
+
+  $scope.userProjects = function () {
+    $scope.displayProjects = [];
+    UserProjectService.getUserProjects({username:$rootScope.user.username}, function(projects) {
+      console.log(projects);
+      console.log(projects.length);
+      for (var i=0; i<projects.length; i++) {
+        var project = {};
+        console.log(projects[i]);
+        project.id = projects[i].id;
+        project.title = projects[i].title;
+        project.user = projects[i].user;
+        project.projectImage = projects[i].medialink.split(';')[0];
+        project.description = projects[i].description;
+        $scope.displayProjects.push(project);
+      }
+    });
+  }
+
 });
 
 koodohub_app.controller('MembersController', function($scope, MemberService) {
   $scope.members = MemberService.query();
 })
 
-koodohub_app.controller('SettingsController', function($scope, $window, $timeout, SettingsService, $upload) {
-
+koodohub_app.controller('SettingsController', function($scope, $window, $timeout, SettingsService,
+                                                       $upload) {
   $scope.upload = function(file) {
     console.log("upload file");
-    var fileLinks = '';
-    $scope.generateThumb(file);
     $upload.upload ({
       url: 'resource/members/uploadAvatar',
       data: {myObj: $scope.myModelObj},
@@ -58,21 +81,36 @@ koodohub_app.controller('SettingsController', function($scope, $window, $timeout
       $scope.uploadPercentage = parseInt(100.0 * evt.loaded / evt.total);
       console.log('progress: ' + $scope.uploadPercentage + '% file :'+ evt.config.file.name);
     }).success(function(data, status, headers, config) {
-      console.log('link'+data);
       $window.location.reload();
     });
   };
+
+  $scope.uploadCover = function(file) {
+    $upload.upload ({
+      url: 'resource/members/uploadCover',
+      data: {myObj: $scope.myModelObj},
+      file: $scope.user.cover_file
+    }).progress(function(evt) {
+      $scope.uploadPercentage = parseInt(100.0 * evt.loaded / evt.total);
+      console.log('progress: ' + $scope.uploadPercentage + '% file :'+ evt.config.file.name);
+    }).success(function(data, status, headers, config) {
+      $window.location.reload();
+    });
+  };
+
   $scope.updateEmail = function() {
     SettingsService.updateEmail({email:$scope.user.email});
   }
   $scope.updatePassword = function() {
-    SettingsService.updatePassword({oldPassword:$scope.user.oldPassword, newPassword:$scope.user.newPassword});
+    SettingsService.updatePassword({oldPassword:$scope.user.oldPassword,
+      newPassword:$scope.user.newPassword});
   }
 });
 
-koodohub_app.controller('postNewProjectController', function($scope, $rootScope, $timeout,
-                                                             $q, ProjectService, $upload) {
-  $scope.fileReaderSupported = window.FileReader != null && (window.FileAPI == null || FileAPI.html5 != false);
+koodohub_app.controller('NewProjectController', function($scope, $rootScope, $timeout,
+                                                             $q, ProjectService, $upload, $location) {
+  $scope.fileReaderSupported = window.FileReader != null
+    && (window.FileAPI == null || FileAPI.html5 != false);
   $scope.project = new ProjectService();
   $scope.previewTemplate='';
   $scope.project_files = [];
@@ -99,7 +137,7 @@ koodohub_app.controller('postNewProjectController', function($scope, $rootScope,
       $scope.project.description = $scope.description;
       console.log("media link:"+$scope.project.medialink);
       $scope.project.$save(function(response) {
-        $location.path('/projects/'+response.data);
+        $location.path('/');
         console.log("project saved.");
       });
     });
@@ -142,18 +180,40 @@ koodohub_app.controller('SignUpModalController', function($scope, $modalInstance
   }
 });
 
-koodohub_app.controller('ActivateController', function($rootScope, $stateParams, ActivateService, $location){
+koodohub_app.controller('ActivateController', function($rootScope, $stateParams, ActivateService,
+                                                       $location){
+  console.log("activate account");
   ActivateService.get({email:$stateParams.email, token:$stateParams.token});
   $location.path("/");
   $rootScope.$broadcast('switchToSignInEvent');
 })
 
 koodohub_app.controller('MemberController', function($scope, $stateParams, MemberService){
-  $scope.member = MemberService.get({username:$stateParams.username});
+  $scope.user = MemberService.get({username:$stateParams.username});
+  $scope.memberProjects = function () {
+    $scope.displayProjects = [];
+    UserProjectService.getUserProjects({username:$rootScope.user.username}, function(projects) {
+      for (var i=0; i<projects.length; i++) {
+        var project = {};
+        project.id = projects[i].id;
+        project.title = projects[i].title;
+        project.projectImage = projects[i].medialink.split(';')[0];
+        project.description = projects[i].description;
+        $scope.displayProjects.push(project);
+        console.log($scope.displayProjects);
+      }
+    });
+  }
+});
+
+koodohub_app.controller('ProjectController', function($scope, $stateParams, ProjectService){
+  $scope.project = ProjectService.get({id:$stateParams.id});
+  console.log($scope.project);
 });
 
 koodohub_app.controller('SignInModalController', function($scope, SessionService, $modalInstance,
                                                  $rootScope, $window, AUTH_TOKEN) {
+
   $scope.signin = function() {
     var that = this;
     SessionService.authenticate($.param({loginName: $scope.session.loginName,

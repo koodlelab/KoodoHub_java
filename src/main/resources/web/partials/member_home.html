@@ -1,39 +1,32 @@
-<div class="row">
-  <aside class="col-md-3">
-    <section>
-      <a href="#/settings" data-toggle="tooltip" data-placement="right" title="Change your avatar">
-        <img src="{{user.avatarLink}}" height="100" width="100" class="img-rounded"/>
-      </a>
-      <h1>{{user.fullname}}</h1>
-      <span>
-        <ng-pluralize count="user.projects.count"
-                      when="{'0': 'No projects.', '1': '1 project.', 'other': '{} projects.'}">
-        </ng-pluralize>
-      </span>
-    </section>
-    <section>
-      <text></text>
-      <div ui-view="member_stats"></div>
-    </section>
-    <section>
-      <div ui-view="member_project_form"></div>
-    </section>
-  </aside>
-  <div class="col-md-9">
-    <div role="tabpanel">
-      <!-- Nav tabs -->
-      <ul class="nav nav-tabs" role="tablist">
-        <li ng-class="{active:isSet(1)}"><a href ng-click="setTab(1)">Home</a></li>
-        <li ng-class="{active:isSet(2)}"><a href ng-click="setTab(2)">Portfolio</a></li>
-        <li ng-class="{active:isSet(3)}"><a href ng-click="setTab(3)">Add new project</a></li>
-      </ul>
-      <div class = "row">
-        <br>
-        <div class="col-md-11 col-md-offset-0">
-          <div class="tab-content">
-            <div ng-show="isSet(1)">Home</div>
-            <div ng-show="isSet(2)">Portfolio</div>
-            <div ng-show="isSet(3)" ng-include="'partials/post_new_project.html'"></div>
+<div ng-include="'partials/member_home_header.html'">
+</div>
+<div class="container-fluid">
+  <div class="row-fluid">
+    <div ng-init="userProjects()">
+      <div ng-repeat="project in displayProjects" >
+        <div class="col-md-4 projectDisplay">
+          <hover-project-image>
+            <a href="#/project/{{project.id}}">
+              <div class="project-img-box">
+                <div class="project-img">
+                  <project-image src="{{project.projectImage}}"></project-image>
+                </div>
+                <div class="project-text">
+                  <div class="project-title">
+                  {{project.title}}
+                  </div>
+                  <p>
+                    {{project.description}}
+                  </p>
+                </div>
+              </div>
+            </a>
+          </hover-project-image>
+          <div class="file-thumbnail-footer">
+            <div class="file-caption-name">
+              <img ng-src="{{project.user.avatarLink}}" height="50" width="50" class="img-rounded"/>
+              {{project.user.username}}
+            </div>
           </div>
         </div>
       </div>

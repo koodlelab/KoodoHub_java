@@ -24,6 +24,7 @@ import java.nio.file.CopyOption;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.security.SecureRandom;
 import java.util.List;
 
 @Path("/members")
@@ -37,6 +38,7 @@ public class UserResource {
     private final MailService mailService;
     private final Logger logger = LoggerFactory.getLogger(UserResource.class);
     private String baseUri = null;
+    private SecureRandom secureRandom = new SecureRandom();
 
     public UserResource(UserService userService, MailService mailService) {
         this.userService = userService;
@@ -57,20 +59,20 @@ public class UserResource {
     @POST
     @UnitOfWork
     public Response create(@Valid User userEntry) {
-        logger.info("creating member {}", userEntry.getUserName());
+        logger.info("creating member {}", userEntry.getUsername());
         if (userService.getUserByEmail(userEntry.getEmail()).isPresent()) {
             return new ErrorResponse(Response.Status.CONFLICT,
                     userEntry.getEmail()+" has been registered.").build();
         }
-        if (userService.getUserByUsername(userEntry.getUserName()).isPresent()) {
+        if (userService.getUserByUsername(userEntry.getUsername()).isPresent()) {
             return new ErrorResponse(Response.Status.CONFLICT,
-                    userEntry.getUserName()+" has been used.").build();
+                    userEntry.getUsername()+" has been used.").build();
         }
         try {
-            User user = userService.createUser(userEntry.getUserName(), userEntry.getPassword(),
-                    userEntry.getFullName(), userEntry.getEmail());
-            logger.info("member {} created.", user.getFullName());
-            mailService.sendActivationEmail(getBaseUriRoutingString(), user.getEmail(), user.getUserName(), user.getActivationKey());
+            User user = userService.createUser(userEntry.getUsername(), userEntry.getPassword(),
+                    userEntry.getFullname(), userEntry.getEmail());
+            logger.info("member {} created.", user.getFullname());
+            mailService.sendActivationEmail(getBaseUriRoutingString(), user.getEmail(), user.getUsername(), user.getActivationKey());
             return new SuccessResponse(Response.Status.CREATED,
                     "Please check " + user.getEmail() + " to activate your account.", null).build();
         } catch (Exception e) {
@@ -97,7 +99,7 @@ public class UserResource {
         logger.debug("activate account for {}", email);
         return Optional.fromNullable(userService.activateUser(email, token))
                     .transform(user -> new SuccessResponse(Response.Status.ACCEPTED,
-                            user.get().getFullName()+", your account is activated.  Please sign in.", null).build())
+                            user.get().getFullname()+", your account is activated.  Please sign in.", null).build())
                     .or(new ErrorResponse(Response.Status.BAD_REQUEST,
                             "Invalid activation.").build());
     }
@@ -131,7 +133,31 @@ public class UserResource {
         } catch (IOException e) {
             logger.error("Failed to save file {} for user {}",
                     fileDetail.getFileName(),
-                    user.getUserName(),
+                    user.getUsername(),
+                    e);
+            return new ErrorResponse(Response.Status.INTERNAL_SERVER_ERROR,
+                    "Unable to upload picture.").build();
+        }
+    }
+
+    @POST
+    @Path("/uploadCover")
+    @UnitOfWork
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    public Response uploadCover(@Auth User user,
+                                 @FormDataParam("file") final InputStream uploadStream,
+                                 @FormDataParam("file") FormDataContentDisposition fileDetail) {
+        String newFileName = "P"+secureRandom.nextInt()+"_"+fileDetail.getFileName();
+        java.nio.file.Path outputPath = FileSystems.getDefault().getPath("media/covers/", newFileName);
+        try {
+            Files.copy(uploadStream, outputPath, StandardCopyOption.REPLACE_EXISTING);
+            user.setCoverLink("covers/" + newFileName);
+            return new SuccessResponse(Response.Status.OK,
+                    "Cover is changed.", null).build();
+        } catch (IOException e) {
+            logger.error("Failed to save file {} for user {}",
+                    fileDetail.getFileName(),
+                    user.getUsername(),
                     e);
             return new ErrorResponse(Response.Status.INTERNAL_SERVER_ERROR,
                     "Unable to upload picture.").build();
@@ -145,7 +171,7 @@ public class UserResource {
     @Path("/updateEmail")
     public Response updateEmail(@Auth User user,
             @QueryParam("email") String email) {
-        logger.info("update user {}", user.getUserName());
+        logger.info("update user {}", user.getUsername());
         user.setEmail(email);
         return new SuccessResponse(Response.Status.OK,
                 "Email is updated.", null).build();
@@ -159,7 +185,7 @@ public class UserResource {
     public Response updatePassword(@Auth User user,
                                 @QueryParam("oldPassword") String oldPassword,
                                 @QueryParam("newPassword") String newPassword) {
-        logger.info("update user {}", user.getUserName());
+        logger.info("update user {}", user.getUsername());
         //TODO validation of old password if password is changed.
         user.updatePassword(newPassword);
         return new SuccessResponse(Response.Status.OK,

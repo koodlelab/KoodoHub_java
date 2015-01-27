@@ -1,6 +1,9 @@
 <div ng-if="authenticated === true">
   <div ng-include="'partials/member_home.html'"></div>
 </div>
+<div class="alert alert-info" ng-show="message">
+  <a href="#" class="close" data-dismiss="alert">&times;</a>
+  {{message}}</div>
 <div ng-if="authenticated === false">
   <div class="center jumbotron">
     <div>

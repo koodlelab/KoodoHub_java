@@ -3,21 +3,22 @@ html {
 }
 
 @font-face {
-  font-family: "sans-serif";
-  src: 'vendor/fonts/Aaargh.ttf';
+  font-family: "DooDah";
+  src: url("../vendor/fonts/KBZipaDeeDooDah.ttf");
+}
+
+@font-face {
+  font-family: "apex-book";
+  src: url("../vendor/fonts/apex-book.ttf");
 }
 
 body {
-  margin-top: 70px;
+  margin-top: 50px;
   -webkit-font-smoothing: antialiased;
-  font-family: ApexRounded,sans-serif;
+  font-family: apex-book,sans-serif;
+  font-size: 2rem;
 }
 
-@media (max-width: 980px) {
-  body {
-    padding-top: 0;
-  }
-}
 .center {
   text-align: center;
 }
@@ -29,6 +30,12 @@ body {
 /* typography */
 h1, h2, h3, h4, h5, h6 {
   line-height: 1;
+}
+
+.navbar-default .navbar-brand {
+  font-size: 3rem;
+  font-weight: bold;
+  color: limegreen;
 }
 
 /*a.tooltip {*/
@@ -75,8 +82,12 @@ p {
   line-height: 1.7em;
 }
 
+/*.navbar-brand {*/
+  /*font-family: "DooDah";*/
+/*}*/
+
 #logo {
-  font-family: "Clear Sans";
+  font-family: "DooDah";
   float: left;
   margin-right: 10px;
   font-size: 1.7em;
@@ -135,7 +146,7 @@ aside section h1 {
 }
 
 fieldset.setting-border {
-  border: 1px groove #ddd !important;
+  border: 1px groove #ccc !important;
   padding: 0 1.4em 1.4em 1.4em !important;
   margin: 0 0 1.5em 0 !important;
   -webkit-box-shadow:  0px 0px 0px 0px #000;
@@ -247,3 +258,115 @@ legend.setting-border {
 :-ms-input-placeholder { /* Internet Explorer 10+ */
   color:    #ccc;
 }
+
+.banner-bg {
+  width: 100%;
+  background-color: #000;
+  height: 280px;
+  position: relative;
+}
+
+.banner-bg-img {
+  background-size: 100%, 280px;
+  width: 100%;
+  height: 280px;
+  background-position: center;
+
+   /*Make the background image cover the area of the <div>, and clip the excess */
+}
+
+.member-header-info {
+  overflow: auto;
+  padding-bottom: 24px;
+  position: relative;
+  top: -60px;
+  margin-bottom: -48px;
+  float: right;
+}
+
+.member-avatar {
+  float: right;
+  position: relative;
+}
+
+.member-info {
+  float: right;
+  margin-right: 7px;
+  /*margin-left: 250px;*/
+}
+
+.member-info h2{
+  margin-top: 20px;
+  color: white;
+}
+
+.container-fluid {
+  margin-right: auto;
+  margin-left: auto;
+  max-width: 950px;
+}
+
+.projectDisplay {
+  width: 280px;
+  height: 280px;
+  float: left;
+  margin: 0 0 20px 20px;
+  padding: 0 0 8px;
+  position: relative;
+  background: rgb(240,240,240);
+  border-radius: 5px;
+}
+
+.dropdown-menu li {
+  font-family: apex-book, sans-serif;
+  font-size: 2rem;
+}
+
+.changeCover-dialog .modal-dialog {
+  max-width :400px;
+}
+
+.file-thumbnail-footer .file-caption-name {
+  padding-top: 7px;
+  padding-left: 7px;
+  font-size: 1.5rem;
+  color: #777;
+}
+
+.post-project {
+  min-width: 1400px;
+}
+
+.project-img-box {
+  overflow: hidden;
+  position: relative;
+}
+
+.project-img-box .project-img {
+  width: 100%;
+  height: 210px;
+  margin-top: 10px;
+}
+
+.project-img-box .project-text {
+  /*background-color: rgba(0, 0, 0, 0.75);*/
+  /*32cd32*/
+  background-color: rgba(240, 240, 240, 0.75);
+  bottom: -41px;
+  /*color: #FFFFFF;*/
+  display: block;
+  font-size: 12px;
+  line-height: 20px;
+  overflow: hidden;
+  padding: 5px 10px;
+  position: absolute;
+  width: 100%;
+  height: 70px;
+}
+
+.project-img-box .project-text .project-title {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+
