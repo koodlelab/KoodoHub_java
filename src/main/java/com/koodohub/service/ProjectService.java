@@ -27,7 +27,4 @@ public class ProjectService {
         return projectDAO.findById(id);
     }
 
-//    public List<Project> getProjectsByUsername(final String username) {
-//        return projectDAO.findByUsername(username);
-//    }
 }

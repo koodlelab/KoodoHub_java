@@ -14,6 +14,32 @@ koodohub_app.directive('hoverProjectImage', function() {
   }
 });
 
+koodohub_app.directive('followingButton', ['$compile', function($compile) {
+  return {
+    restrict: 'E',
+    replace: true,
+    link: function(scope, element, attrs) {
+      scope.$watch('following_user', function(html) {
+        console.log("watching following_user"+scope.following_user);
+        if (scope.following_user != null) {
+          console.log("changing following Button:"+scope.following_user);
+          var html = '';
+          if (scope.following_user) {
+            html = '<button class="btn btn-lg follow-member" ng-click="unfollowUser(member.username)">\n' +
+              '       <i class="glyphicon glyphicon-minus"></i>Unfollow</button>\n'
+          } else {
+            html = '<button class="btn btn-lg follow-member" ng-click="followUser(member.username)">\n' +
+              '       <i class="glyphicon glyphicon-plus"></i>Follow</button>\n'
+          };
+          console.log(html);
+          element.html(html);
+          $compile(element.contents())(scope);
+        };
+      }, true);
+    }
+  };
+}]);
+
 koodohub_app.directive('projectMediaFiles', ['$compile', 'ImageViewService',
   function ($compile, ImageViewService) {
     return {
@@ -76,6 +102,7 @@ koodohub_app.directive('dynamicPreview', ['$compile', 'ImageViewService',
     replace: true,
     link: function (scope, ele, attrs) {
       scope.$watch('project_files', function(html) {
+        console.log("project_files changes.");
         var previewTemplate = '';
         for (var i = 0; i < scope.project_files.length; i++) {
           (function(file, parseFileType, defaultPreviewTemplates) {

@@ -71,15 +71,14 @@
   </changeSet>
 
   <changeSet id="3" author="koodlelab">
-    <createTable tableName="projects">
-      <column name="id" type="int" autoIncrement="true">
-        <constraints primaryKey="true" nullable="false"/>
-      </column>
+    <createTable tableName="relationships">
       <column name="following" type="varchar(30)">
-        <constraints foreignKeyName="username" references="users" nullable="false" />
+        <constraints foreignKeyName="following" references="users"
+                     referencedColumnNames="username" nullable="false" />
       </column>
       <column name="followed" type="varchar(30)">
-        <constraints foreignKeyName="username" references="users" nullable="false" />
+        <constraints foreignKeyName="followed" references="users"
+                     referencedColumnNames="username" nullable="false" />
       </column>
       <column name="createdon" type="TIMESTAMP WITH TIME ZONE">
         <constraints nullable="false"/>
@@ -89,5 +88,10 @@
       </column>
     </createTable>
   </changeSet>
-
+  <changeSet id="4" author="koodlelab">
+    <addPrimaryKey columnNames="following, followed"
+                   constraintName="pk_relationship"
+                   tableName="relationships"/>
+  </changeSet>
 </databaseChangeLog>
+

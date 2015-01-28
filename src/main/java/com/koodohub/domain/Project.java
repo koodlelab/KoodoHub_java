@@ -33,7 +33,7 @@ public class Project {
     @JsonView(JsonViews.Project.class)
     private String title;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name="username")
     private User user;
 

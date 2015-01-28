@@ -1,13 +1,76 @@
-<div ng-include="'partials/member_home_header.html'">
+<div class="banner-bg">
+  <div style="background-image: url({{member.coverLink}}); background-size:100% 280px;" class="banner-bg-img">
+    <div class="container-fluid">
+      <div class="col-md-6 col-md-offset-3">
+        <br>
+        <div class="alert alert-info" ng-show="message">
+          {{message}}</div>
+        <alert type="danger" ng-show="errors">
+          <div ng-repeat="error in errors">{{error}}</div>
+        </alert>
+      </div>
+    </div>
+  </div>
 </div>
 
 <div class="container-fluid">
   <div class="row-fluid">
-    <div ng-init="memberProjects()">
-      <div ng-repeat="project in displayProjects" >
-        <div class="col-md-4">
+    <div class="member-header-info">
+      <div class="member-avatar">
+        <img ng-src="{{member.avatarLink}}" height="140" width="auto"
+             max-width="180" class="img-rounded"/>
+      </div>
+      <div class="member-info">
+        <h2>{{member.fullname}}</h2>
+      </div>
+      <following-button/>
+      <div class="stats">
+        <strong id="following" class="stat">
+          {{displayProjects.length}}
+        </strong>
+        projects
+      </div>
+      <div class="stats">
+        <strong id="following" class="stat">
+          {{member.followings.length()}}
+        </strong>
+        following
+        <strong id="followers" class="stat">
+          {{member.followers.length()}}
+        </strong>
+        followers
+      </div>
+    </div>
+  </div>
+</div>
 
-          <img ng-src="{{project.projectImage}}" width="280">
+<div class="container-fluid">
+  <div class="row-fluid">
+    <div>
+      <div ng-repeat="project in displayProjects" >
+        <div class="col-md-4 projectDisplay">
+          <hover-project-image>
+            <a href="#/project/{{project.id}}">
+              <div class="project-img-box">
+                <div class="project-img">
+                  <project-image src="{{project.projectImage}}"></project-image>
+                </div>
+                <div class="project-text">
+                  <div class="project-title">
+                    {{project.title}}
+                  </div>
+                  <p>
+                    {{project.description}}
+                  </p>
+                </div>
+              </div>
+            </a>
+          </hover-project-image>
+          <div class="file-thumbnail-footer">
+            <div class="file-caption-name">
+              {{project.createdOn}}
+            </div>
+          </div>
         </div>
       </div>
     </div>

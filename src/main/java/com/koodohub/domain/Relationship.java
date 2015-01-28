@@ -1,29 +1,30 @@
 package com.koodohub.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
+import java.io.Serializable;
 
 @NamedQueries({
         @NamedQuery(
-                name = "Relationship.findFollowingByUsername",
-                query = "from Relationship r where r.follower = :username"
+                name = "Relationship.findFollowersByUser",
+                query = "from Relationship r where r.followed = :username"
         ),
         @NamedQuery(
-                name = "Relationship.findFollowedByUsername",
-                query = "from Relationship r where r.followed = :username"
+                name = "Relationship.findFollowingsByUser",
+                query = "from Relationship r where r.following = :username"
         )
 })
 @Entity
 @Table(name = "relationships")
-public class Relationship {
+public class Relationship implements Serializable {
 
     @Id
-    @Column(name = "id")
-    private int id;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="following")
     private User following;
 
+    @Id
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "followed")
     private User followed;

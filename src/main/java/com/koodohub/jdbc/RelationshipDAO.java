@@ -18,13 +18,16 @@ public class RelationshipDAO extends AbstractDAO<Relationship> {
         return persist(relationship);
     }
 
-    public List<Relationship> findFollowingByUsername(String username) {
-        return list(namedQuery("Relationship.findFollowingByUsername")
-                .setString("username", username));
+    public void delete(Relationship relationship) {
+        currentSession().delete(relationship);
     }
 
-    public List<Relationship> findFollowedByUsername(String username) {
-        return list(namedQuery("Relationship.findFollowedByUsername")
-                .setString("username", username));
+    public List<Relationship> findFollowers(final String username) {
+        return list(namedQuery("Relationship.findFollowersByUser").setString("username", username));
     }
+
+    public List<Relationship> findFollowings(final String username) {
+        return list(namedQuery("Relationship.findFollowingsByUser").setString("username", username));
+    }
+
 }

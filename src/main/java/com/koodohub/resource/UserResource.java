@@ -1,9 +1,7 @@
 package com.koodohub.resource;
 
 import com.google.common.base.Optional;
-import com.koodohub.domain.ErrorResponse;
-import com.koodohub.domain.SuccessResponse;
-import com.koodohub.domain.User;
+import com.koodohub.domain.*;
 import com.koodohub.service.MailService;
 import com.koodohub.service.UserService;
 import com.sun.jersey.core.header.FormDataContentDisposition;
@@ -15,17 +13,17 @@ import org.slf4j.LoggerFactory;
 
 import javax.validation.Valid;
 import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
+import javax.ws.rs.core.*;
 import java.io.*;
 import java.nio.file.CopyOption;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.security.SecureRandom;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Path("/members")
 @Produces(MediaType.APPLICATION_JSON)
@@ -92,21 +90,19 @@ public class UserResource {
     }
 
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
     @Path("/activateAccount/{email}/{token}")
     @UnitOfWork
     public Response activateAccount(@PathParam("email") String email, @PathParam("token") String token) {
         logger.debug("activate account for {}", email);
         return Optional.fromNullable(userService.activateUser(email, token))
                     .transform(user -> new SuccessResponse(Response.Status.ACCEPTED,
-                            user.get().getFullname()+", your account is activated.  Please sign in.", null).build())
+                            user.get().getFullname() + ", your account is activated.  Please sign in.", null).build())
                     .or(new ErrorResponse(Response.Status.BAD_REQUEST,
                             "Invalid activation.").build());
     }
 
     @GET
     @Path("/{username}")
-    @Produces(MediaType.APPLICATION_JSON)
     @UnitOfWork
     public User show(@Auth User user, @PathParam("username") String username) {
         logger.debug("querying user information:{}", username);
@@ -165,8 +161,6 @@ public class UserResource {
     }
 
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
     @UnitOfWork
     @Path("/updateEmail")
     public Response updateEmail(@Auth User user,
@@ -178,8 +172,6 @@ public class UserResource {
     }
 
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
     @UnitOfWork
     @Path("/updatePassword")
     public Response updatePassword(@Auth User user,
@@ -192,15 +184,67 @@ public class UserResource {
                 "Password is updated.", null).build();
     }
 
+
+    @GET
+    @Path("/getProjects")
+    @UnitOfWork
+    public Set<Project> getUserProjects(@Auth User user, @QueryParam("username") String username) {
+//        List<Project> projects =  projectService.getProjectsByUsername(username);
+        Optional<User> userQuery = userService.getUserByUsername(username);
+        if (userQuery.isPresent()) {
+            Set<Project> projects = userQuery.get().getProjects();
+            logger.debug("querying projects by username:{} size:{}", username, projects.size());
+            return projects;
+        } else {
+            return Collections.emptySet();
+        }
+    }
+
+    @GET
+    @Path("/follow")
+    @UnitOfWork
+    public Response followUser(@Auth User user, @QueryParam("username") String username) {
+        Optional<User> userQuery = userService.getUserByUsername(username);
+        if (userQuery.isPresent()) {
+            userService.followUser(user, userQuery.get());
+            return new SuccessResponse(Response.Status.OK,
+                    "You are now following "+username, null).build();
+        } else {
+            return new ErrorResponse(Response.Status.BAD_REQUEST,
+                    username+" does not exist.", null).build();
+        }
+    }
+
+    @GET
+    @Path("/unfollow")
+    @UnitOfWork
+    public Response unfollowUser(@Auth User user, @QueryParam("username") String username) {
+        Optional<User> userQuery = userService.getUserByUsername(username);
+        if (userQuery.isPresent()) {
+            userService.unfollowUser(user, userQuery.get());
+            return new SuccessResponse(Response.Status.OK,
+                    "You have un-followed "+username, null).build();
+        } else {
+            return new ErrorResponse(Response.Status.BAD_REQUEST,
+                    username+" does not exist.", null).build();
+        }
+    }
+
     @GET
     @Path("/getFollowers")
-    public List<String> getFollowers(@QueryParam("username") String username) {
-        return userService.getFollowedBy(username);
+    @UnitOfWork
+    public List<User> getFollowers(@Auth User user, @QueryParam("username") String username) {
+        List<User> users = userService.getFollowersByUser(username);
+        logger.debug("get followers for user {} size {}", username, users.size());
+        return users;
     }
 
     @GET
     @Path("/getFollowings")
-    public List<String> getFollowings(@PathParam("username") String username) {
-        return userService.getFollowings(username);
+    @UnitOfWork
+    public List<User> getFollowings(@Auth User user, @QueryParam("username") String username) {
+        List<User> users = userService.getFollowingsByUser(username);
+        logger.debug("get followers for user {} size {}", username, users.size());
+        return users;
     }
 }

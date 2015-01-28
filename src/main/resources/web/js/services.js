@@ -18,28 +18,50 @@ services.factory('SettingsService', function ($resource) {
     'updateEmail': {
       method: 'GET',
       params: {path:'updateEmail'},
-      isArray: false}
-  }, {
+      isArray: false
+    },
+
     'updatePassword': {
       method: 'GET',
       params: {path:'updatePassword'},
-      isArray: false}
-  })
+      isArray: false
+    }
+  });
 });
 
-services.factory('UserProjectService', function($resource) {
-  return $resource('resource/projects/:path', {path: '@path'}, {
+services.factory('UserService', function($resource) {
+  return $resource('resource/members/:path', {path: '@path'}, {
     'getUserProjects': {
       method: 'GET',
-      params: {path:'getUserProjects'},
+      params: {path:'getProjects'},
       isArray: true
-    }},{
+    },
     'getAllInterestedProjects': {
       method: 'GET',
-      params: {path:'getAllInterestedProjects'},
+      params: {path: 'getAllInterestedProjects'},
       isArray: true
-    }}
-  )
+    },
+    'followUser': {
+      method: 'GET',
+      params: {path: 'follow'},
+      isArray: false
+    },
+    'unfollowUser': {
+      method: 'GET',
+      params: {path: 'unfollow'},
+      isArray: false
+    },
+    'getFollowings': {
+      method: 'GET',
+      params: {path: 'getFollowings'},
+      isArray: true
+    },
+    'getFollowers': {
+      method: 'GET',
+      params: {path: 'getFollowers'},
+      isArray: true
+    }
+  })
 });
 
 services.factory('ImageViewService', function() {
@@ -100,7 +122,7 @@ services.factory('ImageViewService', function() {
     return 'other';
   };
   return this;
-})
+});
 
 services.factory('ProjectService', function($resource) {
   return $resource('resource/projects/:id');

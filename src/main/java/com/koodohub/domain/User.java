@@ -56,6 +56,7 @@ public class User {
     @FormParam("password")
     @Size(min = 6, max = 100)
     @Column(name = "password", nullable = false)
+    @JsonIgnore
     private String password;
 
     @Id
@@ -67,13 +68,16 @@ public class User {
     private String username;
 
     @Column(name = "role", nullable = false)
+    @JsonIgnore
     private String role;
 
     @Column(name = "activated", nullable = false)
+    @JsonIgnore
     private boolean activated;
 
     @Size(min = 0, max = 255)
     @Column(name = "activationkey", length = 255)
+    @JsonIgnore
     private String activationKey;
 
     @Column(name = "avatarlink", length = 255)
@@ -82,9 +86,20 @@ public class User {
     @Column(name = "coverlink", length = 255)
     private String coverLink;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy="user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy="user",
+            cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private Set<Project> projects = new HashSet<>();
+
+//    @OneToMany(fetch = FetchType.LAZY, mappedBy="following",
+//            cascade = CascadeType.ALL, orphanRemoval = true)
+//    @JsonIgnore
+//    private transient Set<Relationship> followings = new HashSet<>();
+//
+//    @OneToMany(fetch = FetchType.LAZY, mappedBy="followed",
+//            cascade = CascadeType.ALL, orphanRemoval = true)
+//    @JsonIgnore
+//    private transient Set<Relationship> followers = new HashSet<>();
 
     @Embedded
     private final AuditUpdate auditUpdate;
@@ -146,6 +161,7 @@ public class User {
         return username;
     }
 
+    //TODO remove this from view for security
     public String getPassword() {
         return password;
     }
@@ -166,7 +182,6 @@ public class User {
         return role;
     }
 
-
     public String getAvatarLink() {
         return avatarLink;
     }
@@ -176,4 +191,12 @@ public class User {
     public Set<Project> getProjects() {
         return this.projects;
     }
+
+//    public Set<Relationship> getFollowing() {
+//        return this.followings;
+//    }
+//
+//    public Set<Relationship> getFollowed() {
+//        return this.followers;
+//    }
 }

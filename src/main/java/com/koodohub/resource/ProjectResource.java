@@ -64,15 +64,6 @@ public class ProjectResource {
         return projectInfo.get();
     }
 
-    @GET
-    @Path("/getUserProjects")
-    @UnitOfWork
-    public Set<Project> getUserProjects(@Auth User user, @QueryParam("username") String username) {
-//        List<Project> projects =  projectService.getProjectsByUsername(username);
-        Set<Project> projects = user.getProjects();
-        log.debug("querying projects by username:{} size:{}", username, projects.size());
-        return projects;
-    }
 
     @POST
     @Path("/uploadFile")

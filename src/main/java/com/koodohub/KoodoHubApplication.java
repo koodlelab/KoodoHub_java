@@ -1,6 +1,7 @@
 package com.koodohub;
 
 import com.koodohub.domain.Project;
+import com.koodohub.domain.Relationship;
 import com.koodohub.domain.User;
 import com.koodohub.jdbc.ProjectDAO;
 import com.koodohub.jdbc.RelationshipDAO;
@@ -30,7 +31,7 @@ public class KoodoHubApplication extends Application<KoodoHubConfiguration> {
     protected ApplicationContext applicationContext;
 
     private final HibernateBundle<KoodoHubConfiguration> hibernateBundle =
-            new HibernateBundle<KoodoHubConfiguration>(User.class, Project.class) {
+            new HibernateBundle<KoodoHubConfiguration>(User.class, Project.class, Relationship.class) {
                 @Override
                 public DataSourceFactory getDataSourceFactory(KoodoHubConfiguration configuration) {
                     return configuration.getDataSourceFactory();

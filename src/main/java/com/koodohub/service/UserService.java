@@ -61,21 +61,35 @@ public class UserService {
         return Optional.absent();
     }
 
-    public List<String> getFollowings(final String username) {
-        List<Relationship> relationships = this.relationshipDAO.findFollowingByUsername(username);
-        List<String> users = new ArrayList<>(relationships.size());
-        for (Relationship relationship : relationships) {
-            users.add(relationship.getFollowed());
-        }
-        return users;
+    public void followUser(final User follower, final User followed) {
+        Relationship relationship = new Relationship();
+        relationship.init(follower, followed);
+        relationshipDAO.save(relationship);
     }
 
-    public List<String> getFollowedBy(final String username) {
-        List<Relationship> relationships = this.relationshipDAO.findFollowedByUsername(username);
-        List<String> users = new ArrayList<>(relationships.size());
-        for (Relationship relationship : relationships) {
-            users.add(relationship.getFollower());
+    public void unfollowUser(final User follower, final User followed) {
+        Relationship relationship = new Relationship();
+        relationship.init(follower, followed);
+        relationshipDAO.delete(relationship);
+    }
+
+    public List<User> getFollowersByUser(final String username) {
+        List<Relationship> relationships = relationshipDAO.findFollowers(username);
+
+        List<User> followers = new ArrayList<>(relationships.size());
+        for (Relationship relationship: relationships) {
+            followers.add(relationship.getFollowing());
         }
-        return users;
+        return followers;
+    }
+
+    public List<User> getFollowingsByUser(final String username) {
+        List<Relationship> relationships = relationshipDAO.findFollowings(username);
+
+        List<User> followings = new ArrayList<>(relationships.size());
+        for (Relationship relationship: relationships) {
+            followings.add(relationship.getFollowing());
+        }
+        return followings;
     }
 }

@@ -281,16 +281,23 @@ legend.setting-border {
   position: relative;
   top: -60px;
   margin-bottom: -48px;
+  float: left;
+  width: 100%;
+}
+
+.follow-member{
+  position: relative;
   float: right;
+  margin-top: 70px;
 }
 
 .member-avatar {
-  float: right;
+  float: left;
   position: relative;
 }
 
 .member-info {
-  float: right;
+  float: left;
   margin-right: 7px;
   /*margin-left: 250px;*/
 }
@@ -368,5 +375,32 @@ legend.setting-border {
   font-size: 16px;
   font-weight: bold;
 }
+
+.stats {
+  overflow: auto;
+}
+
+.stats strong {
+  display: block;
+}
+  /*a {*/
+    /*float: left;*/
+    /*padding: 0 10px;*/
+    /*border_left: 1px solid $grayLighter;*/
+    /*color: gray;*/
+  /*&:first-child {*/
+     /*padding-left: 0;*/
+     /*border: 0;*/
+   /*}*/
+  /*&:hover {*/
+     /*text-decoration: none;*/
+     /*color: $blue;*/
+   /*}*/
+    /*strong {*/
+      /*display: block;*/
+    /*}*/
+  /*}*/
+/*}*/
+
 
 
