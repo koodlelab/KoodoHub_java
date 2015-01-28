@@ -21,8 +21,35 @@
              max-width="180" class="img-rounded"/>
       </div>
       <div class="member-info">
+        <!--<section>-->
         <h2>{{user.fullname}}</h2>
+        <!--</section>-->
       </div>
+      <div class="member-info">
+        <section>
+          <div class="stats">
+            <a href="#">
+              <strong id="projects">
+                {{displayProjects.length}}
+              </strong>
+              projects
+            </a>
+            <a href="#">
+              <strong id="following">
+                {{user.followings.length}}
+              </strong>
+              following
+            </a>
+            <a href="#">
+              <strong id="followers">
+                {{user.followers.length}}
+              </strong>
+              followers
+            </a>
+          </div>
+        </section>
+      </div>
+
     </div>
   </div>
 </div>

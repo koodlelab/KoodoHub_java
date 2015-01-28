@@ -3,6 +3,33 @@
 koodohub_app.controller('HomeController', ['$scope', '$modal','$rootScope',
   '$cookieStore', 'UserService', function($scope, $modal, $rootScope,
                                                    $cookieStore, UserService){
+  $scope.$watch('user.username', function() {
+    if ($scope.user) {
+
+      UserService.getFollowings({username: $scope.user.username}, function (followings) {
+        $scope.user.followings = followings;
+      });
+
+      UserService.getFollowers({username: $scope.user.username}, function (followers) {
+        $scope.user.followers = followers;
+      });
+
+      $scope.displayProjects = [];
+
+      UserService.getUserProjects({username:$rootScope.user.username}, function(projects) {
+        for (var i=0; i<projects.length; i++) {
+          var project = {};
+          project.id = projects[i].id;
+          project.title = projects[i].title;
+          project.user = projects[i].user;
+          project.projectImage = projects[i].medialink.split(';')[0];
+          project.description = projects[i].description;
+          project.createdOn = projects[i].createdOn;
+          $scope.displayProjects.push(project);
+        }
+      });
+    }
+  });
 
   $rootScope.$on('switchToSignInEvent', function(event) {
     delete $rootScope.errors;
@@ -50,27 +77,6 @@ koodohub_app.controller('HomeController', ['$scope', '$modal','$rootScope',
     var isCurrentUser = ($rootScope.user.username === user);
     return isCurrentUser;
   };
-
-
-
-  $scope.userProjects = function () {
-    $scope.displayProjects = [];
-    UserService.getUserProjects({username:$rootScope.user.username}, function(projects) {
-      console.log(projects);
-      console.log(projects.length);
-      for (var i=0; i<projects.length; i++) {
-        var project = {};
-        project.id = projects[i].id;
-        project.title = projects[i].title;
-        project.user = projects[i].user;
-        project.projectImage = projects[i].medialink.split(';')[0];
-        project.description = projects[i].description;
-        project.createdOn = projects[i].createdOn;
-        $scope.displayProjects.push(project);
-      }
-    });
-  };
-
 
 }]);
 
@@ -123,11 +129,11 @@ koodohub_app.controller('SettingsController', function($scope, $window, $timeout
   $scope.unfollowUser = function(username) {
     SettingsService.unfollowUser({username: username});
   }
-
 });
 
 koodohub_app.controller('NewProjectController', function($scope, $rootScope, $timeout,
-                                                             $q, ProjectService, $upload, $location) {
+                                                             $q, ProjectService, UserService,
+                                                             $upload, $location) {
   $scope.fileReaderSupported = window.FileReader != null
     && (window.FileAPI == null || FileAPI.html5 != false);
   $scope.project = new ProjectService();
@@ -156,8 +162,19 @@ koodohub_app.controller('NewProjectController', function($scope, $rootScope, $ti
       $scope.project.description = $scope.description;
       console.log("media link:"+$scope.project.medialink);
       $scope.project.$save(function(response) {
+        UserService.getUserProjects({username:$rootScope.user.username}, function(projects) {
+          for (var i=0; i<projects.length; i++) {
+            var project = {};
+            project.id = projects[i].id;
+            project.title = projects[i].title;
+            project.user = projects[i].user;
+            project.projectImage = projects[i].medialink.split(';')[0];
+            project.description = projects[i].description;
+            project.createdOn = projects[i].createdOn;
+            $scope.displayProjects.push(project);
+          }
+        });
         $location.path('/');
-        console.log("project saved.");
       });
     });
   }
@@ -208,21 +225,7 @@ koodohub_app.controller('ActivateController', function($rootScope, $stateParams,
 
 koodohub_app.controller('MemberController', function($rootScope,$scope, $stateParams,
                                                      MemberService, UserService){
-  UserService.getFollowers({username:$stateParams.username}, function(followers) {
-    $scope.member.followers = followers;
-    console.log(followers);
-    $scope.following_user = false;
-    for (var i = 0; i< followers.length; i++) {
-      if (followers[i].username === $rootScope.user.username) {
-        $scope.following_user = true;
-        break;
-      }
-    }
-    console.log("followingUser:"+$scope.following_user);
-  });
-  UserService.getFollowings({username:$stateParams.username}, function(followings) {
-    $scope.member.followings = followings;
-  });
+
   $scope.member = MemberService.get({username:$stateParams.username});
   $scope.$watch('member.username', function() {
     if ($scope.member.username) {
@@ -241,17 +244,42 @@ koodohub_app.controller('MemberController', function($rootScope,$scope, $statePa
             console.log($scope.displayProjects);
           }
         });
+      refreshFollowers($stateParams.username);
+      UserService.getFollowings({username:$stateParams.username}, function(followings) {
+        $scope.member.followings = followings;
+      });
     }
-  })
+  });
+
+  var refreshStatus = function(followers) {
+    $scope.following_user = false;
+    $scope.member.followers = followers;
+    for (var i = 0; i< followers.length; i++) {
+      if (followers[i].username === $rootScope.user.username) {
+        $scope.following_user = true;
+        break;
+      }
+    }
+  }
+
+  var refreshFollowers = function(user) {
+    UserService.getFollowers({username:user}, function(followers) {
+      refreshStatus(followers);
+    });
+  }
+
   $scope.followUser = function(user) {
-    UserService.followUser({username:user});
-    $scope.following_user = true;
-    console.log("follow user:"+$scope.following_user);
+    console.log("follow user "+user);
+    UserService.followUser({username:user}, function(response) {
+      refreshStatus(response.data);
+    });
   };
 
   $scope.unfollowUser = function(user) {
-    UserService.unfollowUser({username:user});
-    $scope.following_user = false;
+    console.log("unfollow user "+user);
+    UserService.unfollowUser({username:user}, function(response) {
+      refreshStatus(response.data);
+    });
   };
 });
 

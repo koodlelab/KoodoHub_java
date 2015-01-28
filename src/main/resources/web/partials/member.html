@@ -21,24 +21,34 @@
              max-width="180" class="img-rounded"/>
       </div>
       <div class="member-info">
-        <h2>{{member.fullname}}</h2>
+        <!--<section>-->
+          <h2>{{member.fullname}}</h2>
+          <following-button/>
+        <!--</section>-->
       </div>
-      <following-button/>
-      <div class="stats">
-        <strong id="following" class="stat">
-          {{displayProjects.length}}
-        </strong>
-        projects
-      </div>
-      <div class="stats">
-        <strong id="following" class="stat">
-          {{member.followings.length()}}
-        </strong>
-        following
-        <strong id="followers" class="stat">
-          {{member.followers.length()}}
-        </strong>
-        followers
+      <div class="member-info">
+        <section>
+          <div class="stats">
+            <a href="#">
+              <strong id="projects">
+                {{displayProjects.length}}
+              </strong>
+              projects
+            </a>
+            <a href="#">
+              <strong id="following">
+                {{member.followings.length}}
+              </strong>
+              following
+            </a>
+            <a href="#">
+              <strong id="followers">
+                {{member.followers.length}}
+              </strong>
+              followers
+            </a>
+          </div>
+        </section>
       </div>
     </div>
   </div>

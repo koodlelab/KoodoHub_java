@@ -207,8 +207,9 @@ public class UserResource {
         Optional<User> userQuery = userService.getUserByUsername(username);
         if (userQuery.isPresent()) {
             userService.followUser(user, userQuery.get());
-            return new SuccessResponse(Response.Status.OK,
-                    "You are now following "+username, null).build();
+            List<User> users = userService.getFollowersByUser(username);
+            return new SuccessResponse<List<User>>(Response.Status.OK,
+                    "You are now following "+username, users).build();
         } else {
             return new ErrorResponse(Response.Status.BAD_REQUEST,
                     username+" does not exist.", null).build();
@@ -222,8 +223,9 @@ public class UserResource {
         Optional<User> userQuery = userService.getUserByUsername(username);
         if (userQuery.isPresent()) {
             userService.unfollowUser(user, userQuery.get());
-            return new SuccessResponse(Response.Status.OK,
-                    "You have un-followed "+username, null).build();
+            List<User> users = userService.getFollowersByUser(username);
+            return new SuccessResponse<List<User>>(Response.Status.OK,
+                    "You have un-followed "+username, users).build();
         } else {
             return new ErrorResponse(Response.Status.BAD_REQUEST,
                     username+" does not exist.", null).build();
@@ -244,7 +246,7 @@ public class UserResource {
     @UnitOfWork
     public List<User> getFollowings(@Auth User user, @QueryParam("username") String username) {
         List<User> users = userService.getFollowingsByUser(username);
-        logger.debug("get followers for user {} size {}", username, users.size());
+        logger.debug("get followings for user {} size {}", username, users.size());
         return users;
     }
 }

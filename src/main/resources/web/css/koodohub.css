@@ -285,10 +285,10 @@ legend.setting-border {
   width: 100%;
 }
 
-.follow-member{
+.follow-member {
   position: relative;
   float: right;
-  margin-top: 70px;
+  /*margin-top: 70px;*/
 }
 
 .member-avatar {
@@ -297,7 +297,8 @@ legend.setting-border {
 }
 
 .member-info {
-  float: left;
+  /*float: left;*/
+  padding-left: 10px;
   margin-right: 7px;
   /*margin-left: 250px;*/
 }
@@ -305,6 +306,7 @@ legend.setting-border {
 .member-info h2{
   margin-top: 20px;
   color: white;
+  text-align: left;
 }
 
 .container-fluid {
@@ -377,10 +379,18 @@ legend.setting-border {
 }
 
 .stats {
-  overflow: auto;
+  float: left;
+  color: darkblue;
+  /*overflow: auto;*/
 }
 
-.stats strong {
+.stats a {
+  float: left;
+  padding-right: 40px;
+  color: gray;
+}
+
+.stats a strong {
   display: block;
 }
   /*a {*/
