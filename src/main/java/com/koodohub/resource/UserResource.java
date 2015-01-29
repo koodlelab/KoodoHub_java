@@ -20,10 +20,7 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.security.SecureRandom;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Path("/members")
 @Produces(MediaType.APPLICATION_JSON)
@@ -188,15 +185,28 @@ public class UserResource {
     @GET
     @Path("/getProjects")
     @UnitOfWork
-    public Set<Project> getUserProjects(@Auth User user, @QueryParam("username") String username) {
-//        List<Project> projects =  projectService.getProjectsByUsername(username);
+    public List<Project> getUserProjects(@Auth User user,
+                                        @QueryParam("username") String username,
+                                        @QueryParam("includeFollowing") boolean includeFollowing) {
         Optional<User> userQuery = userService.getUserByUsername(username);
         if (userQuery.isPresent()) {
-            Set<Project> projects = userQuery.get().getProjects();
+            List<Project> projects = userQuery.get().getProjects();
+            if (includeFollowing) {
+                List<User> users = userService.getFollowingsByUser(username);
+                for (User following : users) {
+                    projects.addAll(following.getProjects());
+                }
+            }
+            Collections.sort(projects, new Comparator<Project>() {
+                @Override
+                public int compare(Project o1, Project o2) {
+                    return o1.getCreatedOn().before(o2.getCreatedOn()) ? 1 : -1;
+                }
+            });
             logger.debug("querying projects by username:{} size:{}", username, projects.size());
             return projects;
         } else {
-            return Collections.emptySet();
+            return Collections.emptyList();
         }
     }
 

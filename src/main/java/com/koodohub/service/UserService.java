@@ -88,7 +88,7 @@ public class UserService {
 
         List<User> followings = new ArrayList<>(relationships.size());
         for (Relationship relationship: relationships) {
-            followings.add(relationship.getFollowing());
+            followings.add(relationship.getFollowed());
         }
         return followings;
     }

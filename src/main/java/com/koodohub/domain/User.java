@@ -11,6 +11,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 import javax.ws.rs.FormParam;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -89,7 +90,7 @@ public class User {
     @OneToMany(fetch = FetchType.LAZY, mappedBy="user",
             cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
-    private Set<Project> projects = new HashSet<>();
+    private List<Project> projects = new ArrayList<>();
 
 //    @OneToMany(fetch = FetchType.LAZY, mappedBy="following",
 //            cascade = CascadeType.ALL, orphanRemoval = true)
@@ -188,7 +189,7 @@ public class User {
 
     public String getCoverLink() { return coverLink; }
 
-    public Set<Project> getProjects() {
+    public List<Project> getProjects() {
         return this.projects;
     }
 

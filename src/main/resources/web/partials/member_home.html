@@ -26,7 +26,12 @@
           <div class="file-thumbnail-footer">
             <div class="file-caption-name">
               <img ng-src="{{project.user.avatarLink}}" height="50" width="50" class="img-rounded"/>
-              {{project.user.username}}
+              <div class="file-caption">
+                {{project.user.username}}
+                <section class="file-date">
+                {{project.createdOn}}
+                </section>
+              </div>
             </div>
           </div>
         </div>

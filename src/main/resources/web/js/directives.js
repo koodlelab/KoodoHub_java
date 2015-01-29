@@ -5,7 +5,7 @@ koodohub_app.directive('hoverProjectImage', function() {
     restrict: 'E',
     link: function(scope, element, attrs) {
       element.on('mouseenter', function(event) {
-        element.find('.project-text').css("height", "200px");
+        element.find('.project-text').css("height", "210px");
       });
       element.on('mouseleave', function(event) {
         element.find('.project-text').css("height", "70px");

@@ -16,7 +16,9 @@ koodohub_app.controller('HomeController', ['$scope', '$modal','$rootScope',
 
       $scope.displayProjects = [];
 
-      UserService.getUserProjects({username:$rootScope.user.username}, function(projects) {
+      $scope.portfolioProjects = [];
+
+      UserService.getUserProjects({username:$rootScope.user.username, includeFollowing:true}, function(projects) {
         for (var i=0; i<projects.length; i++) {
           var project = {};
           project.id = projects[i].id;
@@ -25,6 +27,9 @@ koodohub_app.controller('HomeController', ['$scope', '$modal','$rootScope',
           project.projectImage = projects[i].medialink.split(';')[0];
           project.description = projects[i].description;
           project.createdOn = projects[i].createdOn;
+          if (project.user.username === $rootScope.user.username) {
+            $scope.portfolioProjects.push(project);
+          }
           $scope.displayProjects.push(project);
         }
       });
@@ -160,9 +165,8 @@ koodohub_app.controller('NewProjectController', function($scope, $rootScope, $ti
     uploadFiles().then(function() {
       $scope.project.title = $scope.title;
       $scope.project.description = $scope.description;
-      console.log("media link:"+$scope.project.medialink);
       $scope.project.$save(function(response) {
-        UserService.getUserProjects({username:$rootScope.user.username}, function(projects) {
+        UserService.getUserProjects({username:$rootScope.user.username, includeFollowing:false}, function(projects) {
           for (var i=0; i<projects.length; i++) {
             var project = {};
             project.id = projects[i].id;
