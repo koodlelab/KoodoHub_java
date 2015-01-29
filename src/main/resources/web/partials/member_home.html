@@ -25,9 +25,13 @@
           </hover-project-image>
           <div class="file-thumbnail-footer">
             <div class="file-caption-name">
+              <a href="#/member/{{project.user.username}}">
               <img ng-src="{{project.user.avatarLink}}" height="50" width="50" class="img-rounded"/>
+              </a>
               <div class="file-caption">
+                <a href="#/member/{{project.user.username}}">
                 {{project.user.username}}
+                </a>
                 <section class="file-date">
                 {{project.createdOn}}
                 </section>
