@@ -51,7 +51,6 @@ koodohub_app.directive('projectMediaFiles', ['$compile', 'ImageViewService',
       link: function (scope, element, attrs) {
         attrs.$observe('lsrc', function(value) {
           if (value !== "") {
-            console.log(value);
             var mediaLinks = value.split(';');
             console.log(mediaLinks.length);
             var html="";
@@ -64,7 +63,7 @@ koodohub_app.directive('projectMediaFiles', ['$compile', 'ImageViewService',
                   + "/" + mediaLinks[i].split('.').pop())
                   .replace(/\{data\}/g, mediaLinks[i])
                   .replace(/\{width\}/g, "100%")
-                  .replace(/\{controls\}/g, "controls");
+                  .replace(/\{controls\}/g, "autoplay controls");
                 html += file_html;
               }
             }
