@@ -93,5 +93,51 @@
                    constraintName="pk_relationship"
                    tableName="relationships"/>
   </changeSet>
+
+  <changeSet id="5" author="koodlelab">
+    <createTable tableName="comments">
+      <column name="id" type="int" autoIncrement="true">
+        <constraints primaryKey="true" nullable="false"/>
+      </column>
+      <column name="username" type="varchar(30)">
+        <constraints foreignKeyName="username" references="users" nullable="false" />
+      </column>
+      <column name="project" type="int">
+        <constraints foreignKeyName="project" references="projects" nullable="false" />
+      </column>
+      <column name="replyto" type="int">
+        <constraints foreignKeyName="replyto" references="comments" nullable="true" />
+      </column>
+      <column name="raw" type="varchar(255)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="createdon" type="TIMESTAMP WITH TIME ZONE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="updatedon" type="TIMESTAMP WITH TIME ZONE">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+
+  <changeSet id="6" author="koodlelab">
+    <createTable tableName="favorites">
+      <column name="id" type="int" autoIncrement="true">
+        <constraints primaryKey="true" nullable="false"/>
+      </column>
+      <column name="username" type="varchar(30)">
+        <constraints foreignKeyName="username" references="users" nullable="false" />
+      </column>
+      <column name="project" type="int">
+        <constraints foreignKeyName="project" references="projects" nullable="false" />
+      </column>
+      <column name="createdon" type="TIMESTAMP WITH TIME ZONE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="updatedon" type="TIMESTAMP WITH TIME ZONE">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
 </databaseChangeLog>
 

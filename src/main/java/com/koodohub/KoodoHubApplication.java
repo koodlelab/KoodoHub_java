@@ -1,11 +1,7 @@
 package com.koodohub;
 
-import com.koodohub.domain.Project;
-import com.koodohub.domain.Relationship;
-import com.koodohub.domain.User;
-import com.koodohub.jdbc.ProjectDAO;
-import com.koodohub.jdbc.RelationshipDAO;
-import com.koodohub.jdbc.UserDAO;
+import com.koodohub.domain.*;
+import com.koodohub.jdbc.*;
 import com.koodohub.resource.ProjectResource;
 import com.koodohub.resource.SessionResource;
 import com.koodohub.resource.UserResource;
@@ -31,7 +27,8 @@ public class KoodoHubApplication extends Application<KoodoHubConfiguration> {
     protected ApplicationContext applicationContext;
 
     private final HibernateBundle<KoodoHubConfiguration> hibernateBundle =
-            new HibernateBundle<KoodoHubConfiguration>(User.class, Project.class, Relationship.class) {
+            new HibernateBundle<KoodoHubConfiguration>(User.class, Project.class,
+                    Relationship.class, Comment.class, Favorite.class) {
                 @Override
                 public DataSourceFactory getDataSourceFactory(KoodoHubConfiguration configuration) {
                     return configuration.getDataSourceFactory();
@@ -60,6 +57,8 @@ public class KoodoHubApplication extends Application<KoodoHubConfiguration> {
 
         final UserDAO userDAO = new UserDAO(hibernateBundle.getSessionFactory());
         final ProjectDAO projectDAO = new ProjectDAO(hibernateBundle.getSessionFactory());
+        final CommentDAO commentDAO = new CommentDAO(hibernateBundle.getSessionFactory());
+        final FavoriteDAO favoriteDAO = new FavoriteDAO(hibernateBundle.getSessionFactory());
         final RelationshipDAO relationshipDAO = new RelationshipDAO(hibernateBundle.getSessionFactory());
 
         KoodoHubAuthenticator authenticator = new KoodoHubAuthenticator(userDAO);
@@ -67,7 +66,7 @@ public class KoodoHubApplication extends Application<KoodoHubConfiguration> {
         // save business services
         UserService userService = new UserService(userDAO, relationshipDAO);
         MailService mailService = new MailService(configuration);
-        ProjectService projectService = new ProjectService(projectDAO);
+        ProjectService projectService = new ProjectService(projectDAO, commentDAO, favoriteDAO);
         // register dropwizard resource
         environment.jersey().register(new UserResource(userService, mailService));
         environment.jersey().register(new SessionResource(userService, authenticator));

@@ -92,16 +92,6 @@ public class User {
     @JsonIgnore
     private List<Project> projects = new ArrayList<>();
 
-//    @OneToMany(fetch = FetchType.LAZY, mappedBy="following",
-//            cascade = CascadeType.ALL, orphanRemoval = true)
-//    @JsonIgnore
-//    private transient Set<Relationship> followings = new HashSet<>();
-//
-//    @OneToMany(fetch = FetchType.LAZY, mappedBy="followed",
-//            cascade = CascadeType.ALL, orphanRemoval = true)
-//    @JsonIgnore
-//    private transient Set<Relationship> followers = new HashSet<>();
-
     @Embedded
     private final AuditUpdate auditUpdate;
 
@@ -192,12 +182,4 @@ public class User {
     public List<Project> getProjects() {
         return this.projects;
     }
-
-//    public Set<Relationship> getFollowing() {
-//        return this.followings;
-//    }
-//
-//    public Set<Relationship> getFollowed() {
-//        return this.followers;
-//    }
 }

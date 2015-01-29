@@ -1,6 +1,7 @@
 package com.koodohub.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.koodohub.security.JsonViews;
 
@@ -8,6 +9,8 @@ import javax.persistence.*;
 import javax.validation.constraints.Size;
 import javax.ws.rs.FormParam;
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 @NamedQueries({
 //        @NamedQuery(
@@ -48,6 +51,16 @@ public class Project {
     @FormParam("description")
     @JsonView(JsonViews.Project.class)
     private String description;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy="project",
+            cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<Comment> comments = new ArrayList<>();
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy="project",
+            cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<Favorite> favorites = new ArrayList<>();
 
     @Embedded
     private final AuditUpdate auditUpdate = new AuditUpdate();
@@ -90,6 +103,14 @@ public class Project {
 
     public int getId() {
         return this.id;
+    }
+
+    public List<Comment> getComments() {
+        return this.comments;
+    }
+
+    public List<Favorite> getFavorites() {
+        return this.favorites;
     }
 
     public Date getCreatedOn() {

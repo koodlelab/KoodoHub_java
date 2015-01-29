@@ -1,10 +1,7 @@
 package com.koodohub.resource;
 
 import com.google.common.base.Optional;
-import com.koodohub.domain.ErrorResponse;
-import com.koodohub.domain.Project;
-import com.koodohub.domain.SuccessResponse;
-import com.koodohub.domain.User;
+import com.koodohub.domain.*;
 import com.koodohub.service.ProjectService;
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataParam;
@@ -23,9 +20,8 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.security.SecureRandom;
+import java.util.Collections;
 import java.util.List;
-import java.util.Set;
-import java.util.UUID;
 
 @Path("/projects")
 @Produces(MediaType.APPLICATION_JSON)
@@ -33,6 +29,7 @@ import java.util.UUID;
 public class ProjectResource {
 
     private final ProjectService projectService;
+
     private final static Logger log = LoggerFactory.getLogger(ProjectResource.class);
     private SecureRandom secureRandom = new SecureRandom();
 
@@ -64,6 +61,66 @@ public class ProjectResource {
         return projectInfo.get();
     }
 
+    @GET
+    @Path("/{id}/getComments")
+    @UnitOfWork
+    public List<Comment> getComments(@Auth User user,
+                            @PathParam("id") int project_id) {
+        log.debug("get comments on project {}", project_id);
+        final Optional<Project> projectInfo = projectService.getProjectById(project_id);
+        if (projectInfo.isPresent()) {
+            return projectInfo.get().getComments();
+        }
+        return Collections.emptyList();
+    }
+
+    @POST
+    @Path("/{id}/comment")
+    @UnitOfWork
+    public Response comment(@Auth User user,
+                            @PathParam("id") int project_id,
+                            @DefaultValue("-1") @QueryParam("replyto_id") int replyto_id,
+                            @QueryParam("comment") String commentText) {
+        log.debug("{} comment on project {}", user.getUsername(), project_id);
+        final Optional<Project> projectInfo = projectService.getProjectById(project_id);
+        if (projectInfo.isPresent()) {
+            Comment comment = projectService.createComment(user, projectInfo.get(), replyto_id, commentText);
+            return new SuccessResponse<Comment>(Response.Status.OK, "Comment is posted",
+                    comment).build();
+        }
+        return new ErrorResponse(Response.Status.INTERNAL_SERVER_ERROR,
+                "Unable to post comment.").build();
+    }
+
+    @GET
+    @Path("/{id}/getFavorites")
+    @UnitOfWork
+    public List<Favorite> getFavorites(@Auth User user,
+                                 @PathParam("id") int project_id) {
+        log.debug("get favorites on project {}", project_id);
+        final Optional<Project> projectInfo = projectService.getProjectById(project_id);
+        if (projectInfo.isPresent()) {
+            return projectInfo.get().getFavorites();
+        }
+        return Collections.emptyList();
+    }
+
+    @POST
+    @Path("/{id}/favorite")
+    @UnitOfWork
+    public Response favortie(@Auth User user,
+                            @PathParam("id") int project_id) {
+        log.debug("{} favorite on project {}", user.getUsername(), project_id);
+        final Optional<Project> projectInfo = projectService.getProjectById(project_id);
+        if (projectInfo.isPresent()) {
+            Favorite favorite = projectService.createFavorite(user, projectInfo.get());
+            return new SuccessResponse<Favorite>(Response.Status.OK,
+                    "You have marked \"{}\" as favorite."+projectInfo.get().getTitle(),
+                    favorite).build();
+        }
+        return new ErrorResponse(Response.Status.INTERNAL_SERVER_ERROR,
+                "Unable to favorite the project.").build();
+    }
 
     @POST
     @Path("/uploadFile")
