@@ -14,9 +14,9 @@ koodohub_app.controller('HomeController', ['$scope', '$modal','$rootScope',
         $scope.user.followers = followers;
       });
 
-      $scope.displayProjects = [];
+      $rootScope.userDisplayProjects = [];
 
-      $scope.portfolioProjects = [];
+      $rootScope.portfolioProjects = [];
 
       UserService.getUserProjects({username:$rootScope.user.username, includeFollowing:true}, function(projects) {
         for (var i=0; i<projects.length; i++) {
@@ -28,9 +28,9 @@ koodohub_app.controller('HomeController', ['$scope', '$modal','$rootScope',
           project.description = projects[i].description;
           project.createdOn = projects[i].createdOn;
           if (project.user.username === $rootScope.user.username) {
-            $scope.portfolioProjects.push(project);
+            $rootScope.portfolioProjects.push(project);
           }
-          $scope.displayProjects.push(project);
+          $rootScope.userDisplayProjects.push(project);
         }
       });
     }
@@ -127,13 +127,6 @@ koodohub_app.controller('SettingsController', function($scope, $window, $timeout
       newPassword:$scope.user.newPassword});
   }
 
-  $scope.followUser = function(username) {
-    SettingsService.followUser({username: username});
-  }
-
-  $scope.unfollowUser = function(username) {
-    SettingsService.unfollowUser({username: username});
-  }
 });
 
 koodohub_app.controller('NewProjectController', function($scope, $rootScope, $timeout,
@@ -264,6 +257,29 @@ koodohub_app.controller('MemberController', function($rootScope,$scope, $statePa
         break;
       }
     }
+    UserService.getFollowings({username: $scope.user.username}, function (followings) {
+      $scope.user.followings = followings;
+    });
+
+    //TODO
+    $rootScope.portfolioProjects = [];
+    $rootScope.userDisplayProjects = [];
+    UserService.getUserProjects({username:$rootScope.user.username, includeFollowing:true}, function(projects) {
+      for (var i=0; i<projects.length; i++) {
+        var project = {};
+        project.id = projects[i].id;
+        project.title = projects[i].title;
+        project.user = projects[i].user;
+        project.projectImage = projects[i].medialink.split(';')[0];
+        project.description = projects[i].description;
+        project.createdOn = projects[i].createdOn;
+        if (project.user.username === $rootScope.user.username) {
+          $rootScope.portfolioProjects.push(project);
+        }
+        $rootScope.userDisplayProjects.push(project);
+      }
+      console.log("user displayproject:"+$rootScope.userDisplayProjects.length);
+    });
   }
 
   var refreshFollowers = function(user) {

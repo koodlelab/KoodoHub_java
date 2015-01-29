@@ -290,6 +290,12 @@ legend.setting-border {
   position: relative;
 }
 
+.member-avatar-img{
+  height: 140px;
+  width: auto;
+  max-width: 140px;
+}
+
 .member-info {
   /*float: left;*/
   /*margin-left: 7px;*/
