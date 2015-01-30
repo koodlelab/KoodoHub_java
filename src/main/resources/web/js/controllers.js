@@ -241,6 +241,7 @@ koodohub_app.controller('MemberController', function($rootScope,$scope, $statePa
             project.projectImage = projects[i].medialink.split(';')[0];
             project.description = projects[i].description;
             project.createdOn = projects[i].createdOn;
+            project.favoriteCount = projects[i].favoriteCount;
             $scope.displayProjects.push(project);
             console.log($scope.displayProjects);
           }
