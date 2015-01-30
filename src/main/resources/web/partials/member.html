@@ -22,7 +22,7 @@
       <div class="member-info">
         <!--<section>-->
           <h2>{{member.fullname}}</h2>
-          <following-button ng-show="{{member.username !== user.username}}"></following-button>
+        <div ng-show="{{member.username !== user.username}}"><following-button/></div>
         <!--</section>-->
       </div>
       <div class="member-info">
@@ -81,7 +81,7 @@
                 {{project.favoriteCount}} <span class="glyphicon glyphicon-heart"></span>
               </div>
             </div>
-            <div class="author">
+            <div class="author" style="float: left; position: relative; text-align: left">
               {{project.createdOn}}
             </div>
           </div>
