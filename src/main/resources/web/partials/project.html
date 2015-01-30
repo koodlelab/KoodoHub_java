@@ -2,19 +2,19 @@
 <div class="container-fluid">
   <div class="row-fluid">
     <div class="project-title">
-
+      <div class="project-actions">
+        <button class="btn btn-info btn-lg" ng-click="favorite()"
+                tooltip-placement="top" tooltip="Mark it as favorite">
+          <span class="glyphicon glyphicon-heart"></span>
+          Favorite {{project.favorites.length}}</button>
+      </div>
     <a href="#/member/{{project.user.username}}">
       <img ng-src="{{project.user.avatarLink}}" class="img-rounded avatar"/>
     </a>
     <div class="title">
     <h2>{{project.title}}</h2>
 
-    <div class="project-actions">
-      <button class="btn btn-info btn-lg" ng-click="favorite()"
-              tooltip-placement="top" tooltip="Mark it as favorite">
-        <span class="glyphicon glyphicon-heart"></span>
-        Favorite {{project.favorites.length}}</button>
-    </div>
+
     <div class="subtitle">by <a href="#/member/{{project.user.username}}">{{project.user.username}}</a> {{project.createdOn}}</div>
     </div>
     </div>
