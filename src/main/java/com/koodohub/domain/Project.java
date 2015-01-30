@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.koodohub.security.JsonViews;
+import org.hibernate.Hibernate;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
@@ -13,14 +14,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @NamedQueries({
-//        @NamedQuery(
-//                name = "Project.findByUsername",
-//                query = "from Project p where p.owner = :username"
-//        ),
-        @NamedQuery(
-                name = "Project.findById",
-                query = "from Project p where p.id = :id"
-        )
+    @NamedQuery(
+        name = "Project.findById",
+        query = "from Project p where p.id = :id"
+    )
 })
 @Entity
 @Table(name = "projects")
@@ -52,15 +49,23 @@ public class Project {
     @JsonView(JsonViews.Project.class)
     private String description;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy="project",
+    @OneToMany(fetch = FetchType.EAGER, mappedBy="project",
             cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
-    private List<Comment> comments = new ArrayList<>();
+    private List<Comment> comments = new ArrayList<Comment>();
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy="project",
+    @OneToMany(fetch = FetchType.EAGER, mappedBy="project",
             cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
-    private List<Favorite> favorites = new ArrayList<>();
+    private List<Favorite> favorites = new ArrayList<Favorite>();
+
+    @Transient
+    @JsonView(JsonViews.Project.class)
+    private int favoriteCount;
+
+    @Transient
+    @JsonView(JsonViews.Project.class)
+    private int commentCount;
 
     @Embedded
     private final AuditUpdate auditUpdate = new AuditUpdate();
@@ -115,6 +120,16 @@ public class Project {
 
     public Date getCreatedOn() {
         return auditUpdate.getCreatedOn();
+    }
+
+    public int getFavoriteCount() {
+        this.favoriteCount = getFavorites().size();
+        return this.favoriteCount;
+    }
+
+    public int getCommentCount() {
+        this.commentCount = getComments().size();
+        return this.commentCount;
     }
 
 }

@@ -20,12 +20,12 @@ import java.io.Serializable;
 public class Relationship implements Serializable {
 
     @Id
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name="following")
     private User following;
 
     @Id
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "followed")
     private User followed;
 

@@ -23,20 +23,27 @@
               </div>
             </a>
           </hover-project-image>
-          <div class="file-thumbnail-footer">
-            <div class="file-caption-name">
-              <a href="#/member/{{project.user.username}}">
-              <img ng-src="{{project.user.avatarLink}}" height="50" width="50" class="img-rounded"/>
-              </a>
-              <div class="file-caption">
-                <a href="#/member/{{project.user.username}}">
-                {{project.user.username}}
-                </a>
-                <section class="file-date">
-                {{project.createdOn}}
-                </section>
+          <div class="footer">
+            <div class="stats">
+              <div ng-show="project.favoriteCount>0">
+                {{project.favoriteCount}} <span class="glyphicon glyphicon-heart"></span>
               </div>
             </div>
+            <div class="avatar">
+              <a href="#/member/{{project.user.username}}">
+                <img ng-src="{{project.user.avatarLink}}" height="50" width="50" class="img-rounded"/>
+              </a>
+            </div>
+            <div class="author">
+              <a href="#/member/{{project.user.username}}">
+                {{project.user.username}}
+              </a>
+            </div>
+            <div class="date">
+              {{project.createdOn}}
+            </div>
+          </div>
+
           </div>
         </div>
       </div>

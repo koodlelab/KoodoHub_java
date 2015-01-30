@@ -8,6 +8,8 @@ import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataParam;
 import io.dropwizard.auth.Auth;
 import io.dropwizard.hibernate.UnitOfWork;
+import javafx.collections.transformation.SortedList;
+import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -180,7 +182,24 @@ public class UserResource {
         return new SuccessResponse(Response.Status.OK,
                 "Password is updated.", null).build();
     }
-
+    @GET
+    @Path("/getFavorites")
+    @UnitOfWork
+    public List<Project> getFavoriteProjects(@Auth User user) {
+        Hibernate.initialize(user.getFavorites());
+        List<Favorite> favorites = user.getFavorites();
+        List<Project> projects = new ArrayList<>(favorites.size());
+        for (final Favorite favorite : favorites) {
+            projects.add(favorite.getProject());
+        }
+        Collections.sort(projects, new Comparator<Project>() {
+            @Override
+            public int compare(Project o1, Project o2) {
+                return o1.getCreatedOn().before(o2.getCreatedOn()) ? 1 : -1;
+            }
+        });
+        return projects;
+    }
 
     @GET
     @Path("/getProjects")

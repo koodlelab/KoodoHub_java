@@ -20,6 +20,7 @@ koodohub_app.controller('HomeController', ['$scope', '$modal','$rootScope',
 
       UserService.getUserProjects({username:$rootScope.user.username, includeFollowing:true}, function(projects) {
         for (var i=0; i<projects.length; i++) {
+          console.log(projects[i]);
           var project = {};
           project.id = projects[i].id;
           project.title = projects[i].title;
@@ -27,6 +28,8 @@ koodohub_app.controller('HomeController', ['$scope', '$modal','$rootScope',
           project.projectImage = projects[i].medialink.split(';')[0];
           project.description = projects[i].description;
           project.createdOn = projects[i].createdOn;
+          project.favoriteCount = projects[i].favoriteCount;
+          console.log("project favorite count:"+project.favoriteCount);
           if (project.user.username === $rootScope.user.username) {
             $rootScope.portfolioProjects.push(project);
           }
@@ -159,7 +162,8 @@ koodohub_app.controller('NewProjectController', function($scope, $rootScope, $ti
       $scope.project.title = $scope.title;
       $scope.project.description = $scope.description;
       $scope.project.$save(function(response) {
-        UserService.getUserProjects({username:$rootScope.user.username, includeFollowing:false}, function(projects) {
+        UserService.getUserProjects({username:$rootScope.user.username, includeFollowing:false},
+          function(projects) {
           for (var i=0; i<projects.length; i++) {
             var project = {};
             project.id = projects[i].id;
@@ -264,7 +268,8 @@ koodohub_app.controller('MemberController', function($rootScope,$scope, $statePa
     //TODO
     $rootScope.portfolioProjects = [];
     $rootScope.userDisplayProjects = [];
-    UserService.getUserProjects({username:$rootScope.user.username, includeFollowing:true}, function(projects) {
+    UserService.getUserProjects({username:$rootScope.user.username, includeFollowing:true},
+      function(projects) {
       for (var i=0; i<projects.length; i++) {
         var project = {};
         project.id = projects[i].id;
@@ -303,9 +308,23 @@ koodohub_app.controller('MemberController', function($rootScope,$scope, $statePa
   };
 });
 
-koodohub_app.controller('ProjectController', function($scope, $stateParams, ProjectService){
+koodohub_app.controller('ProjectController', function($scope, $stateParams, ProjectService, UserProjectService){
   $scope.project = ProjectService.get({id:$stateParams.id});
-  console.log($scope.project);
+  $scope.project.favorites = [];
+  UserProjectService.getFavorites({id:$stateParams.id}, function(favorites) {
+    $scope.project.favorites = favorites;
+    console.log("favorites:"+$scope.project.favorites.length);
+  });
+  $scope.favorite = function() {
+    for (var i=0; i<$scope.project.favorites.length; i++) {
+      if ($scope.project.favorites[i].user.username === $scope.user.username) {
+        return;
+      }
+    }
+    UserProjectService.favorite({id:$stateParams.id}, function(response) {
+      $scope.project.favorites.push(response.data);
+    });
+  }
 });
 
 koodohub_app.controller('SignInModalController', function($scope, SessionService, $modalInstance,

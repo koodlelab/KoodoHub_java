@@ -6,26 +6,29 @@ import com.koodohub.security.JsonViews;
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 import javax.ws.rs.FormParam;
+import java.io.Serializable;
 import java.sql.Date;
 
 @Entity
 @Table(name = "favorites")
-public class Favorite {
-    @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-    private int id;
+public class Favorite implements Serializable {
 
+    @Id
     @ManyToOne
     @JoinColumn(name="username")
     private User user;
 
+    @Id
     @ManyToOne
     @JoinColumn(name="project")
     private Project project;
 
     @Embedded
-    private final AuditUpdate auditUpdate = new AuditUpdate();
+    private final AuditUpdate auditUpdate;
+
+    public Favorite() {
+        this.auditUpdate = new AuditUpdate();
+    }
 
     public void init(User user, Project project) {
         auditUpdate.init();
@@ -47,10 +50,6 @@ public class Favorite {
 
     public void setUser(User user) {
         this.user = user;
-    }
-
-    public int getId() {
-        return this.id;
     }
 
     public Date getCreatedOn() {

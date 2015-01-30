@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.koodohub.security.JsonViews;
 import com.koodohub.util.RandomUtil;
+import org.hibernate.Hibernate;
 import org.hibernate.validator.constraints.Email;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -82,15 +83,22 @@ public class User {
     private String activationKey;
 
     @Column(name = "avatarlink", length = 255)
+    @JsonView(JsonViews.User.class)
     private String avatarLink;
 
     @Column(name = "coverlink", length = 255)
+    @JsonView(JsonViews.User.class)
     private String coverLink;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy="user",
             cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<Project> projects = new ArrayList<>();
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy="user",
+            cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<Favorite> favorites = new ArrayList<>();
 
     @Embedded
     private final AuditUpdate auditUpdate;
@@ -181,5 +189,9 @@ public class User {
 
     public List<Project> getProjects() {
         return this.projects;
+    }
+
+    public List<Favorite> getFavorites() {
+        return this.favorites;
     }
 }

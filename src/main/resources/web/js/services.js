@@ -128,6 +128,21 @@ services.factory('ProjectService', function($resource) {
   return $resource('resource/projects/:id');
 });
 
+services.factory('UserProjectService', function($resource) {
+  return $resource('resource/projects/:id/:action', {action: '@action'}, {
+    'favorite': {
+      method: 'GET',
+      params: {action:'favorite'},
+      isArray: false
+    },
+    'getFavorites': {
+      method: 'GET',
+      params: {action: 'getFavorites'},
+      isArray: true
+    }
+  });
+})
+
 services.factory('SessionService', function($resource) {
   return $resource('resource/session/:action', {}, {
       authenticate: {

@@ -7,6 +7,7 @@ import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataParam;
 import io.dropwizard.auth.Auth;
 import io.dropwizard.hibernate.UnitOfWork;
+import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -100,15 +101,18 @@ public class ProjectResource {
         log.debug("get favorites on project {}", project_id);
         final Optional<Project> projectInfo = projectService.getProjectById(project_id);
         if (projectInfo.isPresent()) {
-            return projectInfo.get().getFavorites();
+            Hibernate.initialize(projectInfo.get().getFavorites());
+            List<Favorite> favorites = projectInfo.get().getFavorites();
+            log.debug("favorites: {}", favorites.size());
+            return favorites;
         }
         return Collections.emptyList();
     }
 
-    @POST
+    @GET
     @Path("/{id}/favorite")
     @UnitOfWork
-    public Response favortie(@Auth User user,
+    public Response favorite(@Auth User user,
                             @PathParam("id") int project_id) {
         log.debug("{} favorite on project {}", user.getUsername(), project_id);
         final Optional<Project> projectInfo = projectService.getProjectById(project_id);

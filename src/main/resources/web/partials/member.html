@@ -22,7 +22,7 @@
       <div class="member-info">
         <!--<section>-->
           <h2>{{member.fullname}}</h2>
-          <following-button/>
+          <following-button ng-show="{{member.username !== user.username}}"></following-button>
         <!--</section>-->
       </div>
       <div class="member-info">
@@ -75,8 +75,13 @@
               </div>
             </a>
           </hover-project-image>
-          <div class="file-thumbnail-footer">
-            <div class="file-caption-name">
+          <div class="footer">
+            <div class="stats">
+              <div ng-show="project.favoriteCount>0">
+                {{project.favoriteCount}} <span class="glyphicon glyphicon-heart"></span>
+              </div>
+            </div>
+            <div class="author">
               {{project.createdOn}}
             </div>
           </div>

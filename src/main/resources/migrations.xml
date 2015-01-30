@@ -122,9 +122,6 @@
 
   <changeSet id="6" author="koodlelab">
     <createTable tableName="favorites">
-      <column name="id" type="int" autoIncrement="true">
-        <constraints primaryKey="true" nullable="false"/>
-      </column>
       <column name="username" type="varchar(30)">
         <constraints foreignKeyName="username" references="users" nullable="false" />
       </column>
@@ -138,6 +135,12 @@
         <constraints nullable="false"/>
       </column>
     </createTable>
+  </changeSet>
+
+  <changeSet id="7" author="koodlelab">
+    <addPrimaryKey columnNames="username, project"
+                   constraintName="pk_favorites"
+                   tableName="favorites"/>
   </changeSet>
 </databaseChangeLog>
 
