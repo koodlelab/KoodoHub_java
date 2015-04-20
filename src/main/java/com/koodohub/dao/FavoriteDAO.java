@@ -1,7 +1,6 @@
-package com.koodohub.jdbc;
+package com.koodohub.dao;
 
 import com.google.common.base.Optional;
-import com.koodohub.domain.Comment;
 import com.koodohub.domain.Favorite;
 import io.dropwizard.hibernate.AbstractDAO;
 import org.hibernate.SessionFactory;

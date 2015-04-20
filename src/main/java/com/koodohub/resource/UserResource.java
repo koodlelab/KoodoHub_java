@@ -5,24 +5,29 @@ import com.koodohub.domain.*;
 import com.koodohub.service.MailService;
 import com.koodohub.service.UserService;
 import com.sun.jersey.core.header.FormDataContentDisposition;
-import com.sun.jersey.multipart.FormDataParam;
 import io.dropwizard.auth.Auth;
 import io.dropwizard.hibernate.UnitOfWork;
-import javafx.collections.transformation.SortedList;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.validation.Valid;
 import javax.ws.rs.*;
-import javax.ws.rs.core.*;
-import java.io.*;
-import java.nio.file.CopyOption;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.security.SecureRandom;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 @Path("/members")
 @Produces(MediaType.APPLICATION_JSON)

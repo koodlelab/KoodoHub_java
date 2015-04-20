@@ -58,7 +58,6 @@ public class User {
     @FormParam("password")
     @Size(min = 6, max = 100)
     @Column(name = "password", nullable = false)
-    @JsonIgnore
     private String password;
 
     @Id
@@ -95,10 +94,14 @@ public class User {
     @JsonIgnore
     private List<Project> projects = new ArrayList<>();
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy="user",
+    @OneToMany(fetch = FetchType.EAGER, mappedBy="user",
             cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
-    private List<Favorite> favorites = new ArrayList<>();
+    private List<Favorite> favorites = new ArrayList<Favorite>();
+
+    @Transient
+    @JsonView(JsonViews.Project.class)
+    private int favoriteCount;
 
     @Embedded
     private final AuditUpdate auditUpdate;
@@ -165,6 +168,10 @@ public class User {
         return password;
     }
 
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     public void setActivated(boolean activated) {
         this.activated = activated;
     }
@@ -193,5 +200,10 @@ public class User {
 
     public List<Favorite> getFavorites() {
         return this.favorites;
+    }
+
+    public int getFavoriteCount() {
+        this.favoriteCount = getFavorites().size();
+        return this.favoriteCount;
     }
 }

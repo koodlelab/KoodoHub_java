@@ -3,8 +3,8 @@ package com.koodohub.service;
 import com.google.common.base.Optional;
 import com.koodohub.domain.Relationship;
 import com.koodohub.domain.User;
-import com.koodohub.jdbc.RelationshipDAO;
-import com.koodohub.jdbc.UserDAO;
+import com.koodohub.dao.RelationshipDAO;
+import com.koodohub.dao.UserDAO;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.ArrayList;

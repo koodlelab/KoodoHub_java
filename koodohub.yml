@@ -3,6 +3,7 @@ gridEmail: false
 
 server:
   type: simple
+  rootPath: '/resource/*'
   applicationContextPath: /
   adminContextPath: /admin
   connector:

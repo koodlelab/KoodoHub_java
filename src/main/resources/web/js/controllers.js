@@ -20,7 +20,6 @@ koodohub_app.controller('HomeController', ['$scope', '$modal','$rootScope',
 
       UserService.getUserProjects({username:$rootScope.user.username, includeFollowing:true}, function(projects) {
         for (var i=0; i<projects.length; i++) {
-          console.log(projects[i]);
           var project = {};
           project.id = projects[i].id;
           project.title = projects[i].title;
@@ -29,7 +28,6 @@ koodohub_app.controller('HomeController', ['$scope', '$modal','$rootScope',
           project.description = projects[i].description;
           project.createdOn = projects[i].createdOn;
           project.favoriteCount = projects[i].favoriteCount;
-          console.log("project favorite count:"+project.favoriteCount);
           if (project.user.username === $rootScope.user.username) {
             $rootScope.portfolioProjects.push(project);
           }
@@ -95,7 +93,6 @@ koodohub_app.controller('MembersController', function($scope, MemberService) {
 koodohub_app.controller('SettingsController', function($scope, $window, $timeout, SettingsService,
                                                        $upload) {
   $scope.upload = function(file) {
-    console.log("upload file");
     $upload.upload ({
       url: 'resource/members/uploadAvatar',
       data: {myObj: $scope.myModelObj},
@@ -151,7 +148,6 @@ koodohub_app.controller('NewProjectController', function($scope, $rootScope, $ti
         }).progress(function (evt) {
           console.log('progress: ' + $scope.uploadPercentage + '% file :' + evt.config.file.name);
         }).success(function (ddata, status, headers, config) {
-          console.log(config.file.name + ' uploaded.' + ddata.data);
           $scope.project.medialink += (ddata.data + ';');
         })
         promises.push(response);
@@ -183,7 +179,6 @@ koodohub_app.controller('NewProjectController', function($scope, $rootScope, $ti
   $scope.addFiles = function(files) {
     if (typeof files != "undefined") {
       $scope.project_files = $scope.project_files.concat(files);
-      console.log($scope.project_files);
     }
   }
 
@@ -230,7 +225,6 @@ koodohub_app.controller('MemberController', function($rootScope,$scope, $statePa
   $scope.member = MemberService.get({username:$stateParams.username});
   $scope.$watch('member.username', function() {
     if ($scope.member.username) {
-      console.log("name:"+$scope.member.username);
       $scope.displayProjects = [];
       UserService.getUserProjects({username: $scope.member.username},
         function (projects) {
@@ -243,7 +237,6 @@ koodohub_app.controller('MemberController', function($rootScope,$scope, $statePa
             project.createdOn = projects[i].createdOn;
             project.favoriteCount = projects[i].favoriteCount;
             $scope.displayProjects.push(project);
-            console.log($scope.displayProjects);
           }
         });
       refreshFollowers($stateParams.username);
@@ -284,7 +277,6 @@ koodohub_app.controller('MemberController', function($rootScope,$scope, $statePa
         }
         $rootScope.userDisplayProjects.push(project);
       }
-      console.log("user displayproject:"+$rootScope.userDisplayProjects.length);
     });
   }
 
@@ -295,14 +287,12 @@ koodohub_app.controller('MemberController', function($rootScope,$scope, $statePa
   }
 
   $scope.followUser = function(user) {
-    console.log("follow user "+user);
     UserService.followUser({username:user}, function(response) {
       refreshStatus(response.data);
     });
   };
 
   $scope.unfollowUser = function(user) {
-    console.log("unfollow user "+user);
     UserService.unfollowUser({username:user}, function(response) {
       refreshStatus(response.data);
     });
@@ -314,7 +304,6 @@ koodohub_app.controller('ProjectController', function($scope, $stateParams, Proj
   $scope.project.favorites = [];
   UserProjectService.getFavorites({id:$stateParams.id}, function(favorites) {
     $scope.project.favorites = favorites;
-    console.log("favorites:"+$scope.project.favorites.length);
   });
   $scope.favorite = function() {
     for (var i=0; i<$scope.project.favorites.length; i++) {

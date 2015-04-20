@@ -22,11 +22,12 @@ public class SessionResource {
 
     private final Logger logger = LoggerFactory.getLogger(SessionResource.class);
 
-    private Authenticator authManager;
+    private Authenticator<BasicCredentials, User> authManager;
 
     private final UserService userService;
 
-    public SessionResource(final UserService userService, final Authenticator authManager) {
+    public SessionResource(final UserService userService,
+                           final Authenticator<BasicCredentials, User> authManager) {
         this.authManager = authManager;
         this.userService = userService;
     }
@@ -38,7 +39,7 @@ public class SessionResource {
     public UserToken authenticate(@FormParam("loginName") String loginName,
                            @FormParam("password") String password) {
         logger.info("{} login.", loginName);
-        Optional<User> user = null;
+        Optional<User> user;
         try {
             user = this.authManager.authenticate(
                     new BasicCredentials(loginName, password));

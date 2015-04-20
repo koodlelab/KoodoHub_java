@@ -38,7 +38,7 @@ public class KoodoHubConfiguration extends Configuration {
                 URI dbUri = new URI(herokuDB);
                 final String user = dbUri.getUserInfo().split(":")[0];
                 final String password = dbUri.getUserInfo().split(":")[1];
-                final String url = "jdbc:postgresql://" + dbUri.getHost() + ':' + dbUri.getPort() + dbUri.getPath();
+                final String url = "dao:postgresql://" + dbUri.getHost() + ':' + dbUri.getPort() + dbUri.getPath();
                 DatabaseConfiguration databaseConfiguration = new DatabaseConfiguration() {
                     DataSourceFactory dataSourceFactory;
 

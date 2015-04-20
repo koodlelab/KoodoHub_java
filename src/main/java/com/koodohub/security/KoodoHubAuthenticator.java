@@ -2,7 +2,7 @@ package com.koodohub.security;
 
 import com.google.common.base.Optional;
 import com.koodohub.domain.User;
-import com.koodohub.jdbc.UserDAO;
+import com.koodohub.dao.UserDAO;
 import io.dropwizard.auth.AuthenticationException;
 import io.dropwizard.auth.Authenticator;
 import io.dropwizard.auth.basic.BasicCredentials;

@@ -1,4 +1,4 @@
-package com.koodohub.jdbc;
+package com.koodohub.dao;
 
 import com.koodohub.domain.User;
 import io.dropwizard.hibernate.AbstractDAO;

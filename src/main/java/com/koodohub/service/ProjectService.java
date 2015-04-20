@@ -5,11 +5,9 @@ import com.koodohub.domain.Comment;
 import com.koodohub.domain.Favorite;
 import com.koodohub.domain.Project;
 import com.koodohub.domain.User;
-import com.koodohub.jdbc.CommentDAO;
-import com.koodohub.jdbc.FavoriteDAO;
-import com.koodohub.jdbc.ProjectDAO;
-
-import java.util.List;
+import com.koodohub.dao.CommentDAO;
+import com.koodohub.dao.FavoriteDAO;
+import com.koodohub.dao.ProjectDAO;
 
 public class ProjectService {
 

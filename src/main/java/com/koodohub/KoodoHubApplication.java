@@ -1,7 +1,7 @@
 package com.koodohub;
 
 import com.koodohub.domain.*;
-import com.koodohub.jdbc.*;
+import com.koodohub.dao.*;
 import com.koodohub.resource.ProjectResource;
 import com.koodohub.resource.SessionResource;
 import com.koodohub.resource.UserResource;
@@ -23,6 +23,7 @@ import org.springframework.context.ApplicationContext;
 
 public class KoodoHubApplication extends Application<KoodoHubConfiguration> {
 
+    private static final String apps = "aaa.bbb.ccc";
     private static final Logger logger = LoggerFactory.getLogger(KoodoHubApplication.class);
     protected ApplicationContext applicationContext;
 
@@ -62,7 +63,7 @@ public class KoodoHubApplication extends Application<KoodoHubConfiguration> {
         final RelationshipDAO relationshipDAO = new RelationshipDAO(hibernateBundle.getSessionFactory());
 
         KoodoHubAuthenticator authenticator = new KoodoHubAuthenticator(userDAO);
-        environment.jersey().setUrlPattern("/resource/*");
+//        environment.jersey().setUrlPattern("/resource/*");
         // save business services
         UserService userService = new UserService(userDAO, relationshipDAO);
         MailService mailService = new MailService(configuration);

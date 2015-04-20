@@ -20,7 +20,7 @@ database:
   password: koodohub_dev
 
   # the JDBC URL
-  url: jdbc:postgresql://localhost/koodohub
+  url: dao:postgresql://localhost/koodohub
 
   # any properties specific to your JDBC driver:
   properties:

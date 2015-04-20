@@ -1,8 +1,6 @@
-package com.koodohub.jdbc;
+package com.koodohub.dao;
 
-import com.google.common.base.Optional;
 import com.koodohub.domain.Relationship;
-import com.koodohub.domain.User;
 import io.dropwizard.hibernate.AbstractDAO;
 import org.hibernate.SessionFactory;
 
